@@ -6,9 +6,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Из грязи в князи">
+<meta name="apple-mobile-web-app-title" content="UpHill">
 <meta name="theme-color" content="#0b0d12">
-<title>Из грязи в князи</title>
+<title>UpHill</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" type="image/png" href="icon-180.png">
@@ -172,11 +172,45 @@ h3{font-size:16px;margin:16px 0 8px}
 .seg button{flex:1;padding:8px 4px;border-radius:9px;font-size:12.5px;font-weight:600;color:var(--muted)}
 .seg button.on{background:var(--gold);color:#1b1405}
 .credit{font-size:11.5px;color:var(--muted);text-align:center;margin-top:20px}
+/* анимированная сцена */
+#scene{max-width:720px;margin:0 auto;padding:14px 16px 0}
+.scene{position:relative;height:300px;border-radius:22px;overflow:hidden;border:1px solid var(--line);background:#141a29;isolation:isolate}
+.slide{position:absolute;inset:0;opacity:0;transition:opacity 1.4s ease}
+.slide.on{opacity:1}
+.slide img,.slide .emo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;animation:kb 16s ease-in-out infinite alternate}
+.slide .emo{display:flex;align-items:center;justify-content:center;font-size:90px;background:radial-gradient(circle at 30% 20%,#3a4670,#151b2c 70%)}
+@keyframes kb{from{transform:scale(1)}to{transform:scale(1.16) translate(-2%,-1.5%)}}
+.scene-grad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.35),rgba(0,0,0,0) 30%,rgba(0,0,0,0) 55%,rgba(0,0,0,.7));pointer-events:none}
+.scene-tag{position:absolute;top:10px;left:10px;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);padding:5px 10px;border-radius:999px;font-size:12.5px;font-weight:700;max-width:65%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity .4s}
+.scene-dots{position:absolute;top:16px;right:12px;display:flex;gap:5px}
+.scene-dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.4);transition:all .4s}
+.scene-dots i.on{background:#fff;width:18px;border-radius:4px}
+.char{position:absolute;left:16px;bottom:30px;font-size:96px;line-height:1;animation:bob 2.6s ease-in-out infinite;filter:drop-shadow(0 10px 14px rgba(0,0,0,.55));z-index:3}
+.char.cold{animation:shiver .35s linear infinite}
+.char .crown{position:absolute;top:-30px;left:50%;font-size:38px;transform:translateX(-50%) rotate(-10deg);animation:glow 2.2s ease-in-out infinite}
+.char-shadow{position:absolute;left:30px;bottom:22px;width:72px;height:12px;border-radius:50%;background:rgba(0,0,0,.5);animation:shad 2.6s ease-in-out infinite;z-index:2}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+@keyframes shad{0%,100%{transform:scaleX(1);opacity:.55}50%{transform:scaleX(.8);opacity:.35}}
+@keyframes shiver{0%,100%{transform:translateX(0)}25%{transform:translateX(-2px)}75%{transform:translateX(2px)}}
+@keyframes glow{0%,100%{filter:drop-shadow(0 0 4px #ffd76a)}50%{filter:drop-shadow(0 0 14px #ffd76a)}}
+.bubble{position:absolute;left:14px;top:46px;max-width:62%;background:#fff;color:#141824;padding:8px 12px;border-radius:16px 16px 16px 4px;font-size:13px;font-weight:600;line-height:1.3;box-shadow:0 6px 18px rgba(0,0,0,.35);z-index:4;animation:pop .45s cubic-bezier(.2,1.4,.4,1)}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+.bling span{position:absolute;font-size:26px;z-index:4;animation:float 3.2s ease-in-out infinite;filter:drop-shadow(0 4px 6px rgba(0,0,0,.5))}
+@keyframes float{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-10px) rotate(6deg)}}
+.ride{position:absolute;right:12px;bottom:14px;width:44%;max-width:220px;aspect-ratio:16/10;border-radius:14px;overflow:hidden;border:2px solid rgba(255,255,255,.85);box-shadow:0 12px 26px rgba(0,0,0,.55);z-index:3;animation:drive 1.3s cubic-bezier(.2,.8,.2,1) both,idle 4s ease-in-out 1.3s infinite}
+.ride img,.ride .emo{width:100%;height:100%;object-fit:cover;display:flex;align-items:center;justify-content:center;font-size:40px;background:#232b40}
+.ride .lbl{position:absolute;left:0;right:0;bottom:0;background:linear-gradient(transparent,rgba(0,0,0,.8));font-size:11.5px;font-weight:700;padding:10px 7px 4px}
+.walk{position:absolute;right:12px;bottom:14px;background:rgba(0,0,0,.55);padding:6px 10px;border-radius:999px;font-size:12px;z-index:3}
+@keyframes drive{from{transform:translateX(140%)}to{transform:none}}
+@keyframes idle{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@media (prefers-reduced-motion: reduce){.slide img,.slide .emo,.char,.char-shadow,.bling span,.ride,.char .crown{animation:none!important}}
+
 </style>
 </head>
 <body>
 
 <header class="top hidden" id="top"></header>
+<section id="scene" class="hidden"></section>
 <main id="view"></main>
 <button id="nextBtn" class="hidden" data-a="next">Следующий месяц ▸</button>
 <nav class="tabs hidden" id="tabs">
@@ -316,6 +350,45 @@ const TRACKS = [
     {t:'Топ-инфлюенсер', s:20000, m:12, req:{fame:60, item:'iphone'}},
     {t:'Медиамагнат', s:55000, m:18, req:{fame:80, smarts:50, item:'iphone'}},
   ]},
+  // --- карьеры на стыке образований (нужно 2+ диплома)
+  {id:'fintech', combo:1, name:'Финтех', emoji:'💳', img:[16902140, 4960438], desc:'IT + экономика: цифровые банки и платёжные системы.', levels:[
+    {t:'Финтех-аналитик', s:6000, req:{eduAll:['uni_it','uni_econ'], home:1}},
+    {t:'Руководитель продукта', s:12000, m:12, req:{eduAll:['uni_it','uni_econ'], smarts:65, home:1}},
+    {t:'Директор цифрового банка', s:28000, m:18, req:{eduAll:['uni_it','uni_econ'], charisma:50, home:1}},
+    {t:'Основатель финтех-единорога', s:90000, m:24, req:{eduAll:['uni_it','uni_econ'], fame:40, smarts:85, home:1}},
+  ]},
+  {id:'biotech', combo:1, name:'Биотех', emoji:'🧬', img:[4769135, 263337], desc:'Медицина + IT: лекарства будущего и геномика.', levels:[
+    {t:'Биоинформатик', s:7000, req:{eduAll:['uni_med','uni_it'], home:1}},
+    {t:'Ведущий исследователь', s:14000, m:12, req:{eduAll:['uni_med','uni_it'], smarts:75, home:1}},
+    {t:'Директор R&D', s:32000, m:18, req:{eduAll:['uni_med','uni_it'], charisma:45, home:1}},
+    {t:'Основатель биотех-корпорации', s:100000, m:24, req:{eduAll:['uni_med','uni_it'], fame:45, smarts:90, home:1}},
+  ]},
+  {id:'mna', combo:1, name:'Слияния и поглощения', emoji:'🤝', img:[20243867, 5856084], desc:'Право + экономика: сделки на миллиарды.', levels:[
+    {t:'Юрист по сделкам M&A', s:7500, req:{eduAll:['uni_law','uni_econ'], home:1}},
+    {t:'Партнёр по M&A', s:17000, m:12, req:{eduAll:['uni_law','uni_econ'], charisma:50, home:1}},
+    {t:'Директор по сделкам', s:36000, m:18, req:{eduAll:['uni_law','uni_econ'], charisma:60, item:'suit', home:1}},
+    {t:'Легенда Уолл-стрит', s:85000, m:24, req:{eduAll:['uni_law','uni_econ'], fame:50, smarts:85, home:1}},
+  ]},
+  {id:'politics', combo:1, name:'Политика', emoji:'🏛️', img:[15297703, 323705], desc:'Актёрская школа + право или экономика: от помощника депутата до президента.', levels:[
+    {t:'Помощник депутата', s:3000, req:{eduAll:['acting'], edu:['uni_law','uni_econ'], home:1}},
+    {t:'Депутат горсовета', s:6000, m:12, req:{eduAll:['acting'], edu:['uni_law','uni_econ'], fame:20, charisma:50, home:1}},
+    {t:'Мэр города', s:15000, m:18, req:{eduAll:['acting'], edu:['uni_law','uni_econ'], fame:40, home:1}},
+    {t:'Губернатор', s:30000, m:24, req:{eduAll:['acting'], edu:['uni_law','uni_econ'], fame:60, charisma:70, home:1}},
+    {t:'Министр', s:50000, m:24, req:{eduAll:['acting'], edu:['uni_law','uni_econ'], fame:75, home:1}},
+    {t:'Президент', s:120000, m:36, req:{eduAll:['acting'], edu:['uni_law','uni_econ'], fame:90, charisma:85, home:1}},
+  ]},
+  {id:'ceo', combo:1, name:'Топ-менеджмент', emoji:'🏢', img:[19821492, 67301], desc:'MBA + второй диплом: руководить корпорациями.', levels:[
+    {t:'Директор по развитию', s:15000, req:{eduAll:['mba'], uni:2, home:1}},
+    {t:'Операционный директор', s:28000, m:12, req:{eduAll:['mba'], uni:2, charisma:60, home:1}},
+    {t:'Генеральный директор корпорации', s:60000, m:24, req:{eduAll:['mba'], uni:2, fame:40, home:1}},
+    {t:'Председатель совета директоров', s:150000, m:24, req:{eduAll:['mba'], uni:2, fame:65, smarts:85, home:1}},
+  ]},
+  {id:'gamedev', combo:1, name:'Геймдев', emoji:'🎮', img:[30469973, 30469971], desc:'Курсы программирования + актёрская школа: создавать игры-хиты.', levels:[
+    {t:'Гейм-дизайнер', s:3500, req:{eduAll:['code','acting']}},
+    {t:'Креативный директор', s:9000, m:12, req:{eduAll:['code','acting'], charisma:45}},
+    {t:'Глава игровой студии', s:22000, m:18, req:{eduAll:['code','acting'], fame:30}},
+    {t:'Создатель игры-хита', s:70000, m:24, req:{eduAll:['code','acting'], fame:60, smarts:70}},
+  ]},
 ];
 
 /* =========================================================
@@ -359,7 +432,7 @@ const ITEMS = [
   {id:'car_tesla', cat:'cars', name:'Tesla Model S', emoji:'⚡', price:85000, rent:2000, maint:200, drift:-0.009, wear:2.5, p:4, img:[28576666, 28123194], desc:'Электромобиль с автопилотом.'},
   {id:'car_bmw', cat:'cars', name:'BMW 7 Series', emoji:'🚘', price:95000, rent:2200, maint:450, drift:-0.009, wear:2.5, p:4, img:[7985342, 14001842, 11500966], desc:'Представительский седан бизнес-класса.'},
   {id:'car_rover', cat:'cars', name:'Range Rover', emoji:'🚙', price:130000, rent:3000, maint:550, drift:-0.008, wear:2.5, p:5, img:[225841, 116675, 12246946], desc:'Британская роскошь на любом бездорожье.'},
-  {id:'car_porsche', cat:'cars', name:'Porsche 911', emoji:'🏎️', price:150000, rent:3500, maint:600, drift:-0.005, wear:2.5, p:7, img:[3605974, 30968112, 4356142], desc:'Икона спорткаров с 1963 года.'},
+  {id:'car_porsche', cat:'cars', name:'Porsche 911', emoji:'🏎️', price:150000, rent:3500, maint:600, drift:-0.005, wear:2.5, p:7, img:[10563213, 11546094, 13010595], desc:'Икона спорткаров с 1963 года.'},
   {id:'car_g', cat:'cars', name:'Mercedes G 63', emoji:'🚙', price:180000, rent:4200, maint:700, drift:-0.005, wear:2.5, p:7, img:[15679223, 8622817, 15446647], desc:'«Гелик» — квадратный символ статуса.'},
   {id:'car_ferrari', cat:'cars', name:'Ferrari 458 Italia', emoji:'🏎️', price:280000, rent:6500, maint:1200, drift:-0.003, wear:2.5, p:10, img:[19885042, 337909, 11629361], desc:'V8, 570 л.с. и итальянская страсть.'},
   {id:'car_lambo', cat:'cars', name:'Lamborghini Huracán', emoji:'🏎️', price:320000, rent:7500, maint:1400, drift:-0.003, wear:2.5, p:11, img:[17861837, 12499751, 20190806], desc:'V10 и рёв, от которого оборачивается вся улица.'},
@@ -401,6 +474,46 @@ const ITEMS = [
   {id:'b_market', cat:'biz', name:'Сеть супермаркетов', emoji:'🛒', price:8000000, profit:140000, vol:0.25, img:[5951182, 5380919], desc:'20 магазинов по всей области.'},
   {id:'b_it', cat:'biz', name:'IT-компания', emoji:'🧑‍💻', price:25000000, profit:450000, vol:0.5, img:[270632, 1102797, 5223887], desc:'SaaS-платформа с клиентами по всему миру. Доход скачет.'},
   {id:'b_build', cat:'biz', name:'Строительный холдинг', emoji:'🏗️', price:60000000, profit:950000, vol:0.35, img:[2323080, 14169558], desc:'Строит жилые комплексы и мосты.'},
+  // --- новое жильё
+  {id:'re_loft', cat:'realty', name:'Лофт с кирпичными стенами', emoji:'🧱', price:140000, rent:1450, maint:150, comfort:5, wear:0.5, img:[7587819, 6447385, 8092189], desc:'Бывший завод, высокие потолки и панорамные окна.'},
+  {id:'re_bali', cat:'realty', name:'Вилла на Бали', emoji:'🌴', price:900000, rent:8200, maint:900, comfort:8, wear:0.6, p:6, img:[1488327, 8680954], desc:'Джунгли, бассейн и океан на горизонте. Туристы платят щедро.'},
+  {id:'re_chalet', cat:'realty', name:'Шале в Альпах', emoji:'🏔️', price:2400000, rent:18000, maint:2400, comfort:8, wear:0.5, p:8, img:[4969837, 33348506], desc:'Деревянное шале у горнолыжного склона в Церматте.'},
+  {id:'re_dubai', cat:'realty', name:'Апартаменты в Бурдж-Халифе', emoji:'🏙️', price:6000000, rent:42000, maint:6000, comfort:9, wear:0.3, p:12, img:[3463043, 10885339], desc:'148-й этаж самого высокого здания в мире.'},
+  {id:'re_glass', cat:'realty', name:'Особняк из стекла и дерева', emoji:'🏡', price:8000000, rent:56000, maint:8000, comfort:10, wear:0.4, p:13, img:[35361412, 28449020], desc:'Современная архитектура, умный дом и сад с бассейном.'},
+  // --- новая коммерция
+  {id:'cm_storage', cat:'commerce', name:'Склад', emoji:'📦', price:350000, rent:3700, maint:400, wear:0.4, img:[10697106, 4481327], desc:'Логистический склад у трассы. Маркетплейсы всегда ищут площади.'},
+  {id:'cm_resort', cat:'commerce', name:'Курортный отель', emoji:'🏝️', price:25000000, rent:215000, maint:36000, wear:0.5, p:10, img:[5318066, 13281334, 15298798], desc:'Пятизвёздочный курорт на берегу океана.'},
+  // --- новые авто
+  {id:'car_golf', cat:'cars', name:'Volkswagen Golf', emoji:'🚗', price:22000, rent:650, maint:120, drift:-0.008, wear:3, p:1, img:[17540266, 5667625], desc:'Практичный хэтчбек. Отличен для такси и доставки.'},
+  {id:'car_harley', cat:'cars', name:'Мотоцикл Harley-Davidson', emoji:'🏍️', price:28000, rent:900, maint:120, drift:-0.004, wear:3, p:3, img:[3076826, 18671676], desc:'Свобода, хром и рёв V-twin.'},
+  {id:'car_jeep', cat:'cars', name:'Jeep Wrangler', emoji:'🚙', price:55000, rent:1600, maint:250, drift:-0.006, wear:3, p:3, img:[11444082, 8824199], desc:'Внедорожник для пляжей и гор.'},
+  {id:'car_mustang', cat:'cars', name:'Ford Mustang', emoji:'🐎', price:60000, rent:1800, maint:300, drift:-0.006, wear:3, p:4, img:[11045495, 11045491, 10905512], desc:'Американский маслкар с V8.'},
+  {id:'car_r8', cat:'cars', name:'Audi R8', emoji:'🏎️', price:210000, rent:5600, maint:900, drift:-0.004, wear:2.5, p:8, img:[12764935, 17145765, 18502403], desc:'Суперкар на каждый день с мотором V10.'},
+  {id:'car_bentley', cat:'cars', name:'Bentley Continental GT', emoji:'🚘', price:260000, rent:6500, maint:1100, drift:-0.004, wear:2, p:9, img:[18776099, 6872163], desc:'Британское гран-туризмо ручной сборки.'},
+  {id:'car_mclaren', cat:'cars', name:'McLaren 720S', emoji:'🏎️', price:330000, rent:8000, maint:1500, drift:-0.003, wear:2.5, p:11, img:[17883964, 29115178], desc:'Двери-крылья и 720 л.с.'},
+  // --- новые аксессуары (часть открывает подработки)
+  {id:'shades', cat:'acc', name:'Солнцезащитные очки', emoji:'🕶️', price:400, drift:-0.01, keep:0.4, p:1, img:[255305], desc:'Стиль и уверенность.'},
+  {id:'bike', cat:'acc', name:'Велосипед', emoji:'🚲', price:900, drift:-0.008, keep:0.5, p:1, img:[5807754, 128202], desc:'Курьерская подработка приносит на 40% больше.'},
+  {id:'guitar', cat:'acc', name:'Электрогитара', emoji:'🎸', price:1500, drift:-0.004, keep:0.6, p:1, img:[3355317, 3807656], desc:'Открывает подработку: музыка в переходе.'},
+  {id:'camera', cat:'acc', name:'Фотоаппарат', emoji:'📷', price:2000, drift:-0.01, keep:0.5, p:1, img:[13491657, 51383], desc:'Открывает подработку свадебным фотографом.'},
+  {id:'gamingpc', cat:'acc', name:'Игровой ПК', emoji:'🖥️', price:3500, drift:-0.012, keep:0.5, p:1, img:[30469973, 30469971], desc:'Открывает стримы: чем больше слава, тем больше донатов.'},
+  // --- новая вода и авиация
+  {id:'submarine', cat:'water', name:'Личная подводная лодка', emoji:'🐋', price:40000000, rent:520000, maint:230000, drift:-0.003, wear:1.5, p:25, img:[12714602], desc:'Глубоководные экскурсии для миллиардеров.'},
+  {id:'cessna', cat:'air', name:'Лёгкий самолёт Cessna', emoji:'🛩️', price:450000, rent:9000, maint:3500, drift:-0.004, wear:2, p:6, img:[6308947, 5262799], desc:'Первая ступень в небо. Лётная школа заплатит за аренду.'},
+  {id:'seaplane', cat:'air', name:'Гидросамолёт', emoji:'🛬', price:1800000, rent:32000, maint:12000, drift:-0.004, wear:2, p:9, img:[13757876], desc:'Садится на воду у вашего острова.'},
+  {id:'b747', cat:'air', name:'Личный Boeing 747', emoji:'🛫', price:400000000, rent:6500000, maint:2600000, drift:-0.003, wear:1.5, p:40, img:[32329195], desc:'Летающий дворец со спальнями и залом для совещаний.'},
+  // --- новые острова
+  {id:'is_greek', cat:'island', name:'Остров в Греции', emoji:'🏛️', price:25000000, rent:220000, maint:45000, drift:0.004, wear:0.5, p:25, img:[15238390, 15238371, 15468138], desc:'Белые домики, оливы и Эгейское море.'},
+  {id:'is_bora', cat:'island', name:'Остров в Полинезии', emoji:'🌺', price:120000000, rent:1100000, maint:220000, drift:0.004, wear:0.4, p:35, img:[1179156, 1188473, 104750], desc:'Бунгало над лагуной, как на Бора-Бора.'},
+  // --- новые бизнесы
+  {id:'b_barber', cat:'biz', name:'Барбершоп', emoji:'💈', price:40000, profit:1100, vol:0.35, img:[7518728, 8218487], desc:'Стрижки, бороды и кофе для клиентов.'},
+  {id:'b_bakery', cat:'biz', name:'Пекарня', emoji:'🥐', price:60000, profit:1500, vol:0.3, img:[20140442, 15965547], desc:'Хлеб и круассаны каждое утро.'},
+  {id:'b_service', cat:'biz', name:'Автосервис', emoji:'🔧', price:200000, profit:4300, vol:0.35, img:[8986040, 8985514], desc:'Шесть подъёмников и всегда очередь.'},
+  {id:'b_club', cat:'biz', name:'Ночной клуб', emoji:'🪩', price:900000, profit:18000, vol:0.5, img:[8448563, 9005510], desc:'Лучшие диджеи города. Выручка непредсказуема.'},
+  {id:'b_dealer', cat:'biz', name:'Автосалон', emoji:'🚘', price:3000000, profit:55000, vol:0.35, img:[7144174, 7144236], desc:'Официальный дилер премиальных марок.'},
+  {id:'b_film', cat:'biz', name:'Киностудия', emoji:'🎬', price:15000000, profit:270000, vol:0.6, img:[8089249, 6714952], desc:'Сериалы и блокбастеры. Хит может озолотить.'},
+  {id:'b_football', cat:'biz', name:'Футбольный клуб', emoji:'⚽', price:120000000, profit:1900000, vol:0.4, img:[61135, 8783155], desc:'Свой стадион и звёзды мирового футбола.'},
+  {id:'b_airline', cat:'biz', name:'Авиакомпания', emoji:'✈️', price:400000000, profit:6000000, vol:0.35, img:[19912350, 32329195], desc:'Сотня самолётов и рейсы по всему миру.'},
 ];
 const ITEM = Object.fromEntries(ITEMS.map(i => [i.id, i]));
 const RENTAL = Object.fromEntries(RENTALS.map(r => [r.id, r]));
@@ -414,13 +527,26 @@ const countOwned = id => S.assets.filter(a => a.id === id).length;
    ========================================================= */
 const ACTIONS = [
   // подработка
+  {id:'dogs', g:'job', name:'Выгуливать собак', emoji:'🐕', en:15, money:90, eff:{happy:1}},
   {id:'flyers', g:'job', name:'Раздавать листовки', emoji:'📄', en:20, money:120, eff:{happy:-1}},
   {id:'wash', g:'job', name:'Мыть машины', emoji:'🧽', en:25, money:180, eff:{health:-0.5}},
-  {id:'courier', g:'job', name:'Курьер на велосипеде', emoji:'🚲', en:30, money:260, eff:{health:1}},
+  {id:'cleaning', g:'job', name:'Уборка квартир', emoji:'🧹', en:25, money:220},
+  {id:'banquet', g:'job', name:'Официант на банкете', emoji:'🍾', en:25, money:250, eff:{charisma:0.3}},
+  {id:'courier', g:'job', name:'Курьер', emoji:'🚲', en:30, money:260, eff:{health:1}},
+  {id:'furniture', g:'job', name:'Сборка мебели', emoji:'🪛', en:30, money:320, req:{smarts:20}},
   {id:'loader', g:'job', name:'Грузчик', emoji:'📦', en:35, money:340, eff:{health:-3}},
-  {id:'taxi', g:'job', name:'Таксовать на своей машине', emoji:'🚕', en:35, money:700, req:'car'},
-  {id:'freelance', g:'job', name:'Фриланс-проект', emoji:'💻', en:30, money:1300, req:'freelance'},
-  {id:'consult', g:'job', name:'Бизнес-консалтинг', emoji:'📊', en:30, money:6000, req:'consult'},
+  {id:'busker', g:'job', name:'Музыка в переходе', emoji:'🎸', en:20, money:150, req:{item:'guitar'}, eff:{fame:0.4, charisma:0.3}},
+  {id:'promoter', g:'job', name:'Промоутер в клубе', emoji:'🎟️', en:20, money:300, req:{charisma:30}},
+  {id:'resell', g:'job', name:'Перепродать кроссовки', emoji:'👟', en:15, cost:500},
+  {id:'tutor', g:'job', name:'Репетиторство', emoji:'📐', en:20, money:400, req:{smarts:45}},
+  {id:'phones', g:'job', name:'Ремонт телефонов', emoji:'📱', en:25, money:450, req:{smarts:35}},
+  {id:'delivery', g:'job', name:'Доставка на своей машине', emoji:'📦', en:30, money:500, req:{car:1}},
+  {id:'taxi', g:'job', name:'Таксовать на своей машине', emoji:'🚕', en:35, money:700, req:{car:1}},
+  {id:'dj', g:'job', name:'Диджей на вечеринке', emoji:'🎧', en:25, money:700, req:{charisma:40}, eff:{fame:0.5}},
+  {id:'photo', g:'job', name:'Свадебный фотограф', emoji:'📷', en:30, money:900, req:{item:'camera'}},
+  {id:'stream', g:'job', name:'Стрим игр', emoji:'🖥️', en:25, money:'stream', req:{item:'gamingpc'}, eff:{fame:0.6}},
+  {id:'freelance', g:'job', name:'Фриланс-проект', emoji:'💻', en:30, money:1300, req:{item:'macbook', smarts:45}},
+  {id:'consult', g:'job', name:'Бизнес-консалтинг', emoji:'📊', en:30, money:6000, req:{item:'suit', smarts:70, charisma:50}},
   // развитие
   {id:'gym', g:'self', name:'Спортзал', emoji:'🏋️', en:15, cost:40, eff:{health:3, happy:1}},
   {id:'read', g:'self', name:'Читать книги', emoji:'📚', en:10, eff:{smarts:'read'}},
@@ -451,12 +577,14 @@ const GOALS = [
   {id:'landlord', name:'Рантье', emoji:'🏘️', desc:'Сдать что-нибудь в аренду', test:()=>S.assets.some(a=>a.mode==='rent')},
   {id:'biz', name:'Предприниматель', emoji:'🏪', desc:'Купить свой бизнес', test:()=>S.assets.some(a=>ITEM[a.id].cat==='biz')},
   {id:'passive', name:'Пассивный доход', emoji:'💸', desc:'Получать от активов $10 000+ в месяц', test:()=>S.lastPassive>=10000},
+  {id:'polymath', name:'Эрудит', emoji:'📚', desc:'Получить 3 диплома (колледж, вуз или MBA)', test:()=>degrees() >= 3},
   {id:'million', name:'Миллионер', emoji:'💰', desc:'Капитал $1 000 000', test:()=>netWorth()>=1e6},
   {id:'top', name:'Вершина карьеры', emoji:'🏆', desc:'Дойти до последней ступени любой карьеры', test:()=>S.topReached},
-  {id:'supercar', name:'Суперкар', emoji:'🏎️', desc:'Купить Ferrari, Lamborghini, Rolls-Royce или Bugatti', test:()=>S.assets.some(a=>['car_ferrari','car_lambo','car_rolls','car_bugatti'].includes(a.id))},
-  {id:'yacht', name:'Капитан', emoji:'🛥️', desc:'Купить парусную яхту или больше', test:()=>S.assets.some(a=>['sailyacht','motoryacht','superyacht','megayacht'].includes(a.id))},
+  {id:'supercar', name:'Суперкар', emoji:'🏎️', desc:'Купить Ferrari, Lamborghini, McLaren, Bentley, Audi R8, Rolls-Royce или Bugatti', test:()=>S.assets.some(a=>['car_ferrari','car_lambo','car_rolls','car_bugatti','car_mclaren','car_bentley','car_r8'].includes(a.id))},
+  {id:'yacht', name:'Капитан', emoji:'🛥️', desc:'Купить парусную яхту или больше', test:()=>S.assets.some(a=>['sailyacht','motoryacht','superyacht','megayacht','submarine'].includes(a.id))},
   {id:'sky', name:'Небо принадлежит вам', emoji:'🛩️', desc:'Купить вертолёт или самолёт', test:()=>S.assets.some(a=>ITEM[a.id].cat==='air')},
   {id:'island', name:'Свой остров', emoji:'🏝️', desc:'Купить остров', test:()=>S.assets.some(a=>ITEM[a.id].cat==='island')},
+  {id:'president', name:'Президент', emoji:'🏛️', desc:'Пройти политическую карьеру до конца', test:()=>S.job && S.job.track === 'politics' && S.job.level === TRACK.politics.levels.length - 1},
   {id:'m100', name:'$100 миллионов', emoji:'🏦', desc:'Капитал $100 000 000', test:()=>netWorth()>=1e8},
   {id:'billion', name:'Миллиардер', emoji:'👑', desc:'Капитал $1 000 000 000 — финальная цель', test:()=>netWorth()>=1e9},
 ];
@@ -585,7 +713,7 @@ function curPrice(it){
   if(['realty','commerce'].includes(it.cat)) return Math.round(it.price * S.reIdx);
   return it.price;
 }
-function salary(){ return S.job ? TRACK[S.job.track].levels[S.job.level].s : 0; }
+function salary(){ return S.job ? Math.round(TRACK[S.job.track].levels[S.job.level].s * eduBonus()) : 0; }
 function homeComfort(){
   if(S.home.type === 'own'){ const a = S.assets.find(x => x.uid === S.home.uid); return a ? ITEM[a.id].comfort : -5; }
   return RENTAL[S.home.id].comfort;
@@ -627,10 +755,16 @@ function title(){
 
 /* требования */
 function hasEdu(list){ return list.some(e => S.edu.includes(e)); }
+const degrees = () => S.edu.filter(e => /^(college|uni|mba)/.test(e)).length;
+const uniDegrees = () => S.edu.filter(e => /^(uni|mba)/.test(e)).length;
+/* бонус к зарплате: +5% за каждый диплом сверх первого */
+const eduBonus = () => 1 + 0.05 * Math.max(0, degrees() - 1);
 function reqList(req){
   const out = [];
   if(!req) return out;
+  if(req.eduAll) req.eduAll.forEach(e => out.push({ok:S.edu.includes(e), text:'🎓 ' + EDUM[e].name}));
   if(req.edu) out.push({ok:hasEdu(req.edu), text:'🎓 ' + req.edu.map(e => EDUM[e].name).join(' или ')});
+  if(req.uni) out.push({ok:uniDegrees() >= req.uni, text:'📜 Дипломов вуза и MBA: ' + req.uni});
   if(req.smarts) out.push({ok:S.smarts >= req.smarts, text:'🧠 Интеллект ' + req.smarts});
   if(req.charisma) out.push({ok:S.charisma >= req.charisma, text:'😎 Харизма ' + req.charisma});
   if(req.fame) out.push({ok:S.fame >= req.fame, text:'⭐ Слава ' + req.fame});
@@ -650,12 +784,19 @@ function actionCheck(a){
   if(S.energy < a.en) return 'Не хватает энергии';
   const cost = actionCost(a);
   if(cost > 0 && S.money < cost) return 'Не хватает денег';
-  if(a.req === 'car' && !S.assets.some(x => ITEM[x.id].cat === 'cars' && x.mode !== 'rent')) return 'Нужна своя машина (не сданная в аренду)';
-  if(a.req === 'freelance' && !(owns('macbook') && S.smarts >= 45)) return 'Нужны MacBook и интеллект 45';
-  if(a.req === 'consult' && !(owns('suit') && S.smarts >= 70 && S.charisma >= 50)) return 'Нужны костюм, интеллект 70 и харизма 50';
+  const r = a.req;
+  if(r){
+    const miss = [];
+    if(r.car && !personalCar()) miss.push('своя машина (не в аренде)');
+    if(r.item && !owns(r.item)) miss.push(ITEM[r.item].name);
+    if(r.smarts && S.smarts < r.smarts) miss.push('🧠 ' + r.smarts);
+    if(r.charisma && S.charisma < r.charisma) miss.push('😎 ' + r.charisma);
+    if(miss.length) return 'Нужно: ' + miss.join(', ');
+  }
   if(a.id === 'casino' && S.money < 10) return 'Нужно хотя бы $10';
   return '';
 }
+const personalCar = () => S.assets.filter(x => ITEM[x.id].cat === 'cars' && x.mode !== 'rent').sort((a, b) => b.value - a.value)[0];
 function actionCost(a){
   if(a.cost === 'charity') return Math.max(100, Math.round(Math.max(0, netWorth()) * 0.01));
   return a.cost || 0;
@@ -673,9 +814,17 @@ function doAction(id){
   if(cost) S.money -= cost;
   let msg = '';
   if(a.money){
-    const earned = Math.round(a.money * rnd(0.85, 1.15));
+    let base = a.money === 'stream' ? 150 + S.fame * 25 : a.money;
+    if(id === 'courier' && owns('bike')) base *= 1.4;
+    if(id === 'busker') base += rint(0, 200);
+    const earned = Math.round(base * rnd(0.85, 1.15));
     S.money += earned; msg = `${a.emoji} ${a.name}: ${money(earned, true)}`;
-    if(id === 'taxi'){ const car = S.assets.find(x => ITEM[x.id].cat === 'cars' && x.mode !== 'rent'); if(car) car.cond = clamp(car.cond - 2); }
+    if(id === 'taxi' || id === 'delivery'){ const car = personalCar(); if(car) car.cond = clamp(car.cond - 2); }
+  }
+  if(id === 'resell'){
+    const back = rint(150, 1100);
+    S.money += back;
+    msg = back >= 500 ? `👟 Кроссовки ушли за ${money(back)} — прибыль ${money(back - 500, true)}` : `👟 Пришлось сбросить за ${money(back)} — убыток ${money(back - 500)}`;
   }
   const e = a.eff || {};
   if(e.health) S.health = clamp(S.health + e.health);
@@ -703,13 +852,18 @@ function doAction(id){
   afterChange();
 }
 
+const MAX_SHIFTS = 10;   // смена = 3 дня, в месяце 30 дней
+const NO_WORK_PENALTY = 15;
 function workHard(){
   if(!S.job) return;
+  S.job.shifts = S.job.shifts || 0;
+  if(S.job.shifts >= MAX_SHIFTS){ toast('В месяце всего 30 дней — больше смен не влезет'); return; }
   if(S.energy < 25){ toast('Не хватает энергии'); return; }
   S.energy -= 25;
+  S.job.shifts++;
   S.job.perf = clamp(S.job.perf + rnd(10, 14));
   S.happy = clamp(S.happy - 1);
-  toast('💪 Эффективность выросла');
+  toast(`💪 Смена ${S.job.shifts}: эффективность ${Math.round(S.job.perf)}%`);
   afterChange();
 }
 function promoReasons(){
@@ -744,7 +898,7 @@ function apply(tid, li){
   if(!canApply(tid, li)){ toast('Требования не выполнены'); return; }
   const tr = TRACK[tid], lv = tr.levels[li];
   const doIt = () => {
-    S.job = {track:tid, level:li, perf:40, months:0};
+    S.job = {track:tid, level:li, perf:40, months:0, shifts:0};
     if(li === tr.levels.length - 1) S.topReached = true;
     S.energy = Math.min(S.energy, maxEnergy());
     logMsg(`👷 Вы устроились: ${lv.t} (${money(lv.s)}/мес)`);
@@ -902,9 +1056,12 @@ function nextMonth(){
   // --- работа
   if(S.job){
     const tr = TRACK[S.job.track], lv = tr.levels[S.job.level];
-    add(R.inc, '💼 Зарплата: ' + lv.t, lv.s);
+    add(R.inc, '💼 Зарплата: ' + lv.t + (eduBonus() > 1 ? ` (+${Math.round((eduBonus() - 1) * 100)}% за дипломы)` : ''), salary());
     S.job.months++;
-    let dp = 3;
+    const shifts = S.job.shifts || 0;
+    let dp = shifts > 0 ? 3 : -NO_WORK_PENALTY;
+    if(!shifts) logMsg(`⚠️ В этом месяце вы ни разу не пахали: эффективность −${NO_WORK_PENALTY}%`);
+    S.job.shifts = 0;
     if(S.happy < 20) dp -= 4;
     if(S.health < 30) dp -= 3;
     if(S.home.type === 'rent' && S.home.id === 'street') dp -= 3;
@@ -1331,7 +1488,10 @@ function render(){
   renderTop();
   document.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.dataset.x === TAB));
   const nb = $('#nextBtn');
-  nb.innerHTML = `Следующий месяц ▸<small>⚡ Энергия ${Math.round(S.energy)}/${maxEnergy()} · ${MONTHS[(S.t + 1) % 12]}</small>`;
+  const lazy = S.job && !(S.job.shifts > 0);
+  nb.innerHTML = `Следующий месяц ▸<small>${lazy ? '⚠️ Вы ещё не пахали в этом месяце · ' : ''}⚡ Энергия ${Math.round(S.energy)}/${maxEnergy()} · ${MONTHS[(S.t + 1) % 12]}</small>`;
+  $('#scene').classList.toggle('hidden', TAB !== 'life');
+  if(TAB === 'life') updateScene();
   const v = $('#view');
   const f = {life:viewLife, career:viewCareer, shop:viewShop, assets:viewAssets, money:viewMoney}[TAB];
   v.innerHTML = f();
@@ -1342,7 +1502,9 @@ function actBtn(a){
   const parts = [`⚡${a.en}`];
   if(cost) parts.push('−' + money(cost).slice(1));
   let eff = '';
-  if(a.money) eff = '~' + money(a.money, true);
+  if(a.money === 'stream') eff = money(150 + S.fame * 25, true) + ' (зависит от ⭐)';
+  else if(a.money) eff = money(a.money * (a.id === 'courier' && owns('bike') ? 1.4 : 1), true);
+  else if(a.id === 'resell') eff = 'вернёт $150–1 100';
   else if(a.eff){
     const e = a.eff, m = [];
     if(e.health) m.push((e.health > 0 ? '+' : '') + e.health + '❤️');
@@ -1355,7 +1517,6 @@ function actBtn(a){
 }
 
 function viewLife(){
-  const [himg, hemo] = homeImg();
   const ls = LIFESTYLES.find(l => l.id === S.lifestyle);
   const job = S.job ? TRACK[S.job.track].levels[S.job.level] : null;
   const groups = [['job', '💵 Подработка'], ['self', '🌱 Саморазвитие'], ['fun', '🎈 Отдых'], ['risk', '🎲 Риск']];
@@ -1367,7 +1528,6 @@ function viewLife(){
   return `
   ${tips.map(t => `<div class="card" style="border-color:rgba(248,113,113,.4);background:rgba(248,113,113,.07)">⚠️ ${t}</div>`).join('')}
   <div class="card" style="padding:0;overflow:hidden">
-    ${photo(himg, hemo, 'r169', {text:'🏠 ' + homeName()})}
     <div style="padding:12px 14px">
       <div class="row"><div class="grow"><b>${esc(homeName())}</b><div class="sub">${S.home.type === 'rent' ? (RENTAL[S.home.id].rent ? money(RENTAL[S.home.id].rent) + '/мес' : 'бесплатно') : 'своё жильё — платите только содержание'} · комфорт ${homeComfort()}</div></div>
       <button class="btn sm" data-a="housing">Переехать</button></div>
@@ -1376,8 +1536,8 @@ function viewLife(){
     </div>
   </div>
   <div class="card row">
-    <div class="grow"><b>${job ? esc(job.t) : 'Безработный'}</b><div class="sub">${job ? money(job.s) + '/мес · эффективность ' + Math.round(S.job.perf) + '%' : 'Нет постоянного дохода'}${S.study ? ' · учёба: ' + esc(EDUM[S.study.id].name) + ` (${S.study.done}/${EDUM[S.study.id].months})` : ''}</div></div>
-    ${job ? `<button class="btn sm grn" data-a="hard" ${S.energy < 25 ? 'disabled' : ''}>💪 Пахать ⚡25</button>` : `<button class="btn sm pri" data-a="tab" data-x="career">Найти работу</button>`}
+    <div class="grow"><b>${job ? esc(job.t) : 'Безработный'}</b><div class="sub">${job ? money(salary()) + '/мес · эффективность ' + Math.round(S.job.perf) + '% · смен ' + (S.job.shifts || 0) + '/' + MAX_SHIFTS + (S.job.shifts ? '' : ' <span class="no">— нужно пахать!</span>') : 'Нет постоянного дохода'}${S.study ? ' · учёба: ' + esc(EDUM[S.study.id].name) + ` (${S.study.done}/${EDUM[S.study.id].months})` : ''}</div></div>
+    ${job ? `<button class="btn sm grn" data-a="hard" ${S.energy < 25 || S.job.shifts >= MAX_SHIFTS ? 'disabled' : ''}>💪 Пахать 3 дня ⚡25</button>` : `<button class="btn sm pri" data-a="tab" data-x="career">Найти работу</button>`}
   </div>
   ${groups.map(([g, n]) => `<h3>${n}</h3><div class="acts">${ACTIONS.filter(a => a.g === g).map(actBtn).join('')}</div>`).join('')}
   <h3>📰 Жизнь</h3>
@@ -1390,13 +1550,14 @@ function viewCareer(){
     const tr = TRACK[S.job.track], lv = tr.levels[S.job.level], nl = tr.levels[S.job.level + 1];
     const why = promoReasons();
     cur = `<div class="card" style="padding:0;overflow:hidden">${photo(tr.img, tr.emoji, 'r169', {text:tr.emoji + ' ' + tr.name})}
-      <div style="padding:12px 14px"><b style="font-size:17px">${esc(lv.t)}</b><div class="sub">${money(lv.s)}/мес · стаж ${S.job.months} мес. · ступень ${S.job.level + 1} из ${tr.levels.length}</div>
+      <div style="padding:12px 14px"><b style="font-size:17px">${esc(lv.t)}</b><div class="sub">${money(salary())}/мес${eduBonus() > 1 ? ` (вкл. +${Math.round((eduBonus() - 1) * 100)}% за дипломы)` : ''} · стаж ${S.job.months} мес. · ступень ${S.job.level + 1} из ${tr.levels.length}</div>
+      <div class="sub" style="margin-top:6px">📅 Смен в этом месяце: <b class="${S.job.shifts ? 'ok' : 'no'}">${S.job.shifts || 0}/${MAX_SHIFTS}</b> (1 смена = 3 дня). Без единой смены за месяц эффективность −${NO_WORK_PENALTY}%.</div>
       <div style="margin-top:8px" class="sub">Эффективность ${Math.round(S.job.perf)}%</div><div class="bar" style="height:8px"><div style="width:${S.job.perf}%;background:${S.job.perf >= 70 ? 'var(--green)' : 'var(--gold)'}"></div></div>
       ${nl ? `<div class="sub" style="margin-top:8px">Дальше: <b>${esc(nl.t)}</b> — ${money(nl.s)}/мес${why.length ? '<br><span class="no">' + why.map(esc).join(' · ') + '</span>' : '<br><span class="ok">Можно просить повышение!</span>'}</div>` : '<div class="ok" style="margin-top:8px">🏆 Вы на вершине этой карьеры</div>'}
-      <div class="btns"><button class="btn grn" data-a="hard" ${S.energy < 25 ? 'disabled' : ''}>💪 Работать усердно ⚡25</button>${nl ? `<button class="btn pri" data-a="promo">⬆️ Попросить повышение</button>` : ''}<button class="btn red sm" data-a="quit">Уволиться</button></div></div></div>`;
+      <div class="btns"><button class="btn grn" data-a="hard" ${S.energy < 25 || S.job.shifts >= MAX_SHIFTS ? 'disabled' : ''}>💪 Пахать 3 дня ⚡25</button>${nl ? `<button class="btn pri" data-a="promo">⬆️ Попросить повышение</button>` : ''}<button class="btn red sm" data-a="quit">Уволиться</button></div></div></div>`;
   } else cur = `<div class="card">Вы пока нигде не работаете. Выберите карьерную лестницу ниже — начать можно с первой ступени, а с дипломом — сразу выше.</div>`;
 
-  const tracks = TRACKS.map(tr => {
+  const trackCard = tr => {
     const open = OPEN_TRACK === tr.id;
     const canAny = tr.levels.some((_, i) => canApply(tr.id, i));
     const ladder = open ? `<div class="ladder">${tr.levels.map((lv, i) => {
@@ -1418,7 +1579,9 @@ function viewCareer(){
       <div class="body"><div class="row"><div class="grow"><div class="name">${tr.name}</div><div class="desc">${tr.desc}</div>
       <span class="pill g">${money(tr.levels[0].s)} → ${money(tr.levels[tr.levels.length - 1].s)}/мес</span>${canAny ? '<span class="pill y">можно устроиться</span>' : ''}</div></div>
       <button class="btn sm full" style="margin-top:8px" data-a="track" data-x="${tr.id}">${open ? 'Скрыть лестницу ▲' : 'Карьерная лестница ▼'}</button>${ladder}</div></div>`;
-  }).join('');
+  };
+  const tracks = TRACKS.filter(t => !t.combo).map(trackCard).join('');
+  const combos = TRACKS.filter(t => t.combo).map(trackCard).join('');
 
   const edu = EDU.map(e => {
     const done = S.edu.includes(e.id), st = S.study && S.study.id === e.id;
@@ -1430,7 +1593,7 @@ function viewCareer(){
       </div>${done ? '<span class="pill g">✓ Окончено</span>' : st ? '<button class="btn sm red" data-a="drop">Бросить</button>' : `<button class="btn sm blu" data-a="enroll" data-x="${e.id}" ${S.study || !meets(e.req) ? 'disabled' : ''}>Поступить</button>`}</div>`;
   }).join('');
 
-  return `<h2>💼 Работа</h2>${cur}<h2>🪜 Карьерные лестницы</h2>${tracks}<h2>🎓 Образование</h2><p class="sub">Учёба занимает 20 энергии в месяц и оплачивается ежемесячно.</p>${edu}`;
+  return `<h2>💼 Работа</h2>${cur}<h2>🪜 Карьерные лестницы</h2>${tracks}<h2>🔀 Карьеры на стыке профессий</h2><p class="sub">Открываются, когда у вас есть несколько дипломов сразу. Платят намного больше обычных. Каждый диплом сверх первого также даёт +5% к любой зарплате (сейчас: +${Math.round((eduBonus() - 1) * 100)}%).</p>${combos}<h2>🎓 Образование</h2><p class="sub">Учёба занимает 20 энергии в месяц и оплачивается ежемесячно.</p>${edu}`;
 }
 
 function itemCard(it){
@@ -1450,7 +1613,7 @@ function itemCard(it){
     ${mort ? `<button class="btn blu" data-a="mortgage" data-x="${it.id}">Ипотека 20%</button>` : ''}</div></div></div>`;
 }
 function viewShop(){
-  const items = ITEMS.filter(i => i.cat === SHOPCAT);
+  const items = ITEMS.filter(i => i.cat === SHOPCAT).sort((a, b) => a.price - b.price);
   const cat = CATS.find(c => c.id === SHOPCAT);
   const hint = {
     realty:'Живите сами или сдавайте в аренду. Цены следуют за рынком недвижимости.',
@@ -1560,25 +1723,96 @@ function housingSheet(){
 }
 
 /* =========================================================
+   АНИМИРОВАННАЯ СЦЕНА НА ГЛАВНОЙ
+   ========================================================= */
+let sceneSig = '', sceneIdx = 0;
+const PERSONAL_SCENE_CATS = ['island', 'water', 'air'];
+function sceneSlides(){
+  const [himg, hemo] = homeImg();
+  const out = [{img:himg, emoji:hemo, label:'🏠 ' + homeName()}];
+  S.assets.filter(a => PERSONAL_SCENE_CATS.includes(ITEM[a.id].cat) && a.mode !== 'rent')
+    .sort((a, b) => b.value - a.value).slice(0, 4)
+    .forEach(a => { const it = ITEM[a.id]; out.push({img:it.img, emoji:it.emoji, label:it.emoji + ' ' + it.name}); });
+  return out;
+}
+function moodLine(){
+  const nw = netWorth();
+  if(S.home.type === 'rent' && S.home.id === 'street') return pick(['Холодно… Нужна хоть какая-то крыша', 'Сегодня опять на лавочке', 'Главное — заработать на хостел']);
+  if(S.money < 0) return 'Долги душат. Надо срочно что-то делать';
+  if(S.health < 30) return 'Что-то мне нехорошо… Пора к врачу';
+  if(S.job && !(S.job.shifts > 0)) return 'В этом месяце ещё ни одной смены… Надо пахать!';
+  if(S.job && S.job.perf < 25) return 'Начальник косо смотрит. Надо поднажать';
+  if(S.happy < 25) return 'Как-то тоскливо… Может, отдохнуть?';
+  if(!S.job && nw < 1e5) return 'Пора найти нормальную работу';
+  if(nw >= 1e9) return pick(['Миллиард — есть! 👑', 'Куда бы слетать на выходные?', 'Может, купить ещё один остров?']);
+  if(nw >= 1e6) return pick(['Жизнь удалась 😎', 'Деньги должны работать', 'Следующая цель — остров']);
+  return pick(['Шаг за шагом — в гору!', 'Сегодня отличный день для успеха', 'Каждый месяц — новая ступень', 'Однажды у меня будет яхта']);
+}
+function updateScene(){
+  const el = $('#scene');
+  const slides = sceneSlides();
+  const car = personalCar();
+  const acc = [...new Set(S.assets.filter(a => ITEM[a.id].cat === 'acc').map(a => ITEM[a.id].emoji))].slice(0, 6);
+  const nw = netWorth();
+  const crown = nw >= 1e9 ? '👑' : nw >= 1e6 ? '✨' : '';
+  const cold = S.home.type === 'rent' && S.home.id === 'street';
+  const sig = JSON.stringify([S.avatar, slides.map(x => x.label), car && car.uid, acc, crown, cold]);
+  if(sig !== sceneSig){
+    sceneSig = sig;
+    if(sceneIdx >= slides.length) sceneIdx = 0;
+    const pos = [[4,128],[104,120],[118,62],[2,66],[58,168],[124,170]];
+    el.innerHTML = `<div class="scene">
+      ${slides.map((sl, i) => `<div class="slide ${i === sceneIdx ? 'on' : ''}" data-label="${esc(sl.label)}">${sl.img && sl.img.length ? `<img src="${PX(sl.img[0])}" data-alt="${esc(sl.img.slice(1).map(PX).join('|'))}" data-emo="${sl.emoji}" alt="" onerror="imgErr(this)">` : `<div class="emo">${sl.emoji}</div>`}</div>`).join('')}
+      <div class="scene-grad"></div>
+      <div class="scene-tag">${esc(slides[sceneIdx].label)}</div>
+      ${slides.length > 1 ? `<div class="scene-dots">${slides.map((_, i) => `<i class="${i === sceneIdx ? 'on' : ''}"></i>`).join('')}</div>` : ''}
+      <div class="bubble"></div>
+      <div class="char-shadow"></div>
+      <div class="char ${cold ? 'cold' : ''}">${S.avatar}${crown ? `<span class="crown">${crown}</span>` : ''}</div>
+      <div class="bling">${acc.map((e, i) => `<span style="left:${pos[i][0]}px;bottom:${pos[i][1]}px;animation-delay:${i * 0.45}s">${e}</span>`).join('')}</div>
+      ${car ? `<div class="ride"><img src="${PX(ITEM[car.id].img[0])}" data-alt="${esc(ITEM[car.id].img.slice(1).map(PX).join('|'))}" data-emo="${ITEM[car.id].emoji}" alt="" onerror="imgErr(this)"><div class="lbl">${ITEM[car.id].emoji} ${esc(ITEM[car.id].name)}</div></div>` : `<div class="walk">🚶 Пока пешком</div>`}
+    </div>`;
+  }
+  const b = el.querySelector('.bubble');
+  const line = moodLine();
+  if(b && b.dataset.t !== String(S.t) + S.energy + (S.job ? S.job.shifts : '')){
+    b.dataset.t = String(S.t) + S.energy + (S.job ? S.job.shifts : '');
+    b.textContent = line;
+    b.style.animation = 'none'; void b.offsetWidth; b.style.animation = '';
+  }
+}
+setInterval(() => {
+  const el = $('#scene');
+  if(!S || el.classList.contains('hidden') || document.hidden) return;
+  const slides = el.querySelectorAll('.slide');
+  if(slides.length < 2) return;
+  slides[sceneIdx % slides.length].classList.remove('on');
+  sceneIdx = (sceneIdx + 1) % slides.length;
+  slides[sceneIdx].classList.add('on');
+  el.querySelectorAll('.scene-dots i').forEach((d, i) => d.classList.toggle('on', i === sceneIdx));
+  const tag = el.querySelector('.scene-tag'); if(tag) tag.textContent = slides[sceneIdx].dataset.label;
+}, 5000);
+
+/* =========================================================
    СТАРТОВЫЙ ЭКРАН
    ========================================================= */
-let startAvatar = '🧑', startMode = 'hard';
+let startAvatar = '👩‍🦰', startMode = 'hard';
 function showStart(){
   const saved = load();
-  ['#top', '#tabs', '#nextBtn'].forEach(s => $(s).classList.add('hidden'));
-  $('#view').innerHTML = '';
+  ['#top', '#tabs', '#nextBtn', '#scene'].forEach(s => $(s).classList.add('hidden'));
+  $('#view').innerHTML = ''; $('#scene').innerHTML = ''; sceneSig = '';
   const st = $('#start'); st.classList.remove('hidden');
   st.innerHTML = `<div class="wrap">
     ${photo([26859048, 31817156], '🏝️', 'hero')}
-    <h1>Из грязи в князи</h1>
+    <h1>UpHill</h1>
     <p class="sub">Текстовый симулятор жизни. Начните на улице без копейки и станьте миллиардером: карьера, недвижимость, машины, яхты, самолёты и собственный остров.</p>
     ${saved ? `<button class="btn pri full" style="margin:10px 0 18px;min-height:52px;font-size:16px" data-a="continue">▶ Продолжить: ${esc(saved.name)}, ${saved.startAge + Math.floor(saved.t / 12)} лет</button><h3>Или новая жизнь</h3>` : ''}
     <label class="sub">Имя героя</label>
     <input class="field" id="nm" maxlength="24" placeholder="Например, Ламар" value="">
     <label class="sub">Аватар</label>
-    <div class="avs">${['🧑','👨','👩','🧔','👱','👨🏾','👩🏽','🧑🏻'].map(a => `<button class="${a === startAvatar ? 'on' : ''}" data-a="sa" data-x="${a}">${a}</button>`).join('')}</div>
+    <div class="avs">${['👩‍🦰','👨‍🦰','🧑‍🦰','🧑','👨','👩','🧔','👱','👨🏾','👩🏽','🧑🏻'].map(a => `<button class="${a === startAvatar ? 'on' : ''}" data-a="sa" data-x="${a}">${a}</button>`).join('')}</div>
     <label class="sub">Старт</label>
-    <button class="opt ${startMode === 'hard' ? 'on' : ''}" data-a="sm" data-x="hard"><b>🥶 С самого дна</b><span>$0, улица, никаких связей. Настоящий путь «из грязи в князи».</span></button>
+    <button class="opt ${startMode === 'hard' ? 'on' : ''}" data-a="sm" data-x="hard"><b>🥶 С самого дна</b><span>$0, улица, никаких связей. Самый крутой подъём в гору.</span></button>
     <button class="opt ${startMode === 'easy' ? 'on' : ''}" data-a="sm" data-x="easy"><b>🎒 Скромный старт</b><span>$1 500 и койка в хостеле. Немного проще.</span></button>
     <button class="btn pri full" style="margin-top:10px;min-height:52px;font-size:17px" data-a="begin">Начать жизнь</button>
     <div class="credit">Все предметы, жильё и карьеры — с реальными фото (Pexels).<br>Сохранение — автоматически в браузере.</div>
@@ -1611,7 +1845,18 @@ function enterGame(){
    ========================================================= */
 const H = {
   tab:x => { TAB = x; render(); window.scrollTo(0, 0); },
-  next:() => { if(!modalOpen) nextMonth(); },
+  next:() => {
+    if(modalOpen) return;
+    if(S.job && !(S.job.shifts > 0)){
+      const ch = [];
+      if(S.energy >= 25) ch.push({label:'💪 Отпахать смену и дальше', cls:'pri', fn:()=>{ workHard(); nextMonth(); }});
+      ch.push({label:`Всё равно дальше (−${NO_WORK_PENALTY}% эффективности)`, cls:'red', fn:()=>nextMonth()});
+      ch.push({label:'Отмена'});
+      modalQueue.unshift({title:'Вы ещё не работали в этом месяце', emoji:'😴', html:`<p>Нужно отпахать хотя бы одну смену (3 дня) за месяц. Иначе эффективность упадёт на ${NO_WORK_PENALTY}%, а при нуле — увольнение.</p><p class="sub">Сейчас: ${Math.round(S.job.perf)}% · энергия ⚡${Math.round(S.energy)}</p>`, choices:ch});
+      showModal(); return;
+    }
+    nextMonth();
+  },
   act:x => doAction(x),
   hard:() => workHard(),
   promo:() => askPromotion(),

@@ -1,6 +1,6 @@
 {
-  "name": "Из грязи в князи",
-  "short_name": "Из грязи в князи",
+  "name": "UpHill",
+  "short_name": "UpHill",
   "description": "Текстовый симулятор жизни: от улицы до миллиарда",
   "start_url": "./index.html",
   "scope": "./",
