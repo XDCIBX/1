@@ -34,6 +34,7 @@ input{font:inherit}
 .who b{display:block;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .who span{color:var(--muted);font-size:12.5px}
 .cash{text-align:right}
+.mbtn{width:38px;height:38px;border-radius:50%;background:var(--card2);border:1px solid var(--line);font-size:17px;flex:none}
 .cash b{display:block;font-size:19px;color:var(--green);font-variant-numeric:tabular-nums}
 .cash b.neg{color:var(--red)}
 .cash span{color:var(--muted);font-size:12px}
@@ -127,8 +128,8 @@ h3{font-size:16px;margin:16px 0 8px}
 #nextBtn small{display:block;font-weight:600;font-size:11.5px;opacity:.75}
 
 /* tabs */
-.tabs{position:fixed;bottom:0;left:0;right:0;z-index:30;display:grid;grid-template-columns:repeat(5,1fr);background:rgba(16,19,26,.95);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:6px 4px calc(6px + var(--safe-b))}
-.tab{display:flex;flex-direction:column;align-items:center;gap:1px;font-size:10.5px;color:var(--muted);padding:4px 0}
+.tabs{position:fixed;bottom:0;left:0;right:0;z-index:30;display:grid;grid-template-columns:repeat(6,1fr);background:rgba(16,19,26,.95);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid var(--line);padding:6px 4px calc(6px + var(--safe-b))}
+.tab{display:flex;flex-direction:column;align-items:center;gap:1px;font-size:10px;letter-spacing:-.2px;color:var(--muted);padding:4px 0}
 .tab span{font-size:22px;filter:grayscale(1);opacity:.65}
 .tab.on{color:var(--gold)}
 .tab.on span{filter:none;opacity:1}
@@ -168,6 +169,17 @@ h3{font-size:16px;margin:16px 0 8px}
 .goal.done .ic{background:rgba(52,211,153,.18)}
 .goal.done b{color:var(--green)}
 .spark{width:100%;height:90px;display:block}
+.upg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.up{display:flex;flex-direction:column;text-align:left;background:var(--card2);border:1px solid var(--line);border-radius:12px;overflow:hidden;padding:0}
+.up[disabled]{opacity:1;pointer-events:none}
+.up:not(.done)[disabled] .upi{filter:grayscale(.8) brightness(.6)}
+.up.done{border-color:rgba(52,211,153,.6)}
+.upi{aspect-ratio:16/10;overflow:hidden;background:#232b40}
+.upi img,.upi .emo{width:100%;height:100%;object-fit:cover;display:flex;align-items:center;justify-content:center;font-size:24px}
+.upt{padding:6px 8px 8px}
+.upt b{display:block;font-size:12px;line-height:1.25}
+.upt small{color:var(--muted);font-size:11px}
+.up.done small{color:var(--green)}
 .statgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .stat{background:var(--card2);border-radius:14px;padding:10px}
 .stat small{color:var(--muted);font-size:12px;display:block}
@@ -248,6 +260,7 @@ h3{font-size:16px;margin:16px 0 8px}
 <nav class="tabs hidden" id="tabs">
   <button class="tab" data-a="tab" data-x="life"><span>🏠</span>Жизнь</button>
   <button class="tab" data-a="tab" data-x="career"><span>💼</span>Карьера</button>
+  <button class="tab" data-a="tab" data-x="study"><span>🎓</span>Учёба</button>
   <button class="tab" data-a="tab" data-x="shop"><span>🛍️</span>Покупки</button>
   <button class="tab" data-a="tab" data-x="assets"><span>🔑</span>Имущество</button>
   <button class="tab" data-a="tab" data-x="money"><span>📈</span>Финансы</button>
@@ -327,43 +340,59 @@ const EDU = [
 const TRACKS = [
   {id:'food', name:'Ресторанный бизнес', emoji:'🍳', img:[2544829, 15323383], desc:'От мойки посуды до собственной сети ресторанов.', levels:[
     {t:'Посудомойщик', s:1100},
-    {t:'Официант', s:1500, m:6, req:{charisma:10}},
-    {t:'Повар', s:2200, m:6, req:{edu:['cook']}, entry:{edu:['cook']}},
-    {t:'Су-шеф', s:3600, m:12, req:{smarts:30}},
+    {t:'Помощник повара', s:1300, m:4},
+    {t:'Официант', s:1600, m:6, req:{charisma:10}},
+    {t:'Бармен', s:2000, m:6, req:{charisma:20}},
+    {t:'Повар', s:2400, m:6, req:{edu:['cook']}, entry:{edu:['cook']}},
+    {t:'Су-шеф', s:3800, m:12, req:{smarts:30}},
     {t:'Шеф-повар', s:6500, m:12, req:{charisma:35}},
     {t:'Управляющий рестораном', s:10000, m:18, req:{smarts:45, charisma:45}},
     {t:'Ресторатор', s:22000, m:24, req:{fame:30, charisma:60}},
+    {t:'Владелец ресторанной сети', s:45000, m:24, req:{fame:50, smarts:60}},
   ]},
   {id:'logi', name:'Логистика', emoji:'🚚', img:[6868462, 15930214, 7706590], desc:'Курьер, который однажды купит весь автопарк.', levels:[
     {t:'Курьер', s:1000},
+    {t:'Кладовщик', s:1300, m:4},
     {t:'Водитель-экспедитор', s:1700, m:6},
     {t:'Диспетчер', s:2500, m:8, req:{smarts:30}},
     {t:'Логист', s:3800, m:12, req:{smarts:40}},
-    {t:'Начальник склада', s:6000, m:12, req:{charisma:35}},
+    {t:'Старший логист', s:5000, m:12, req:{smarts:45}},
+    {t:'Начальник склада', s:6500, m:12, req:{charisma:35}},
     {t:'Директор по логистике', s:11000, m:18, req:{smarts:55, charisma:45}},
-    {t:'Владелец транспортной компании', s:28000, m:24, req:{fame:20, smarts:65}},
+    {t:'Вице-президент по цепочкам поставок', s:18000, m:24, req:{smarts:60, charisma:50}},
+    {t:'Владелец транспортной компании', s:30000, m:24, req:{fame:20, smarts:65}},
   ]},
   {id:'build', name:'Стройка и недвижимость', emoji:'🏗️', img:[5505125, 7121536], desc:'С лопатой в руках — к небоскрёбам со своим именем.', levels:[
     {t:'Разнорабочий', s:1200, req:{health:40}},
-    {t:'Бригадир', s:2000, m:8, req:{smarts:20}},
-    {t:'Агент по недвижимости', s:3000, m:8, req:{charisma:30}, entry:{charisma:30}},
+    {t:'Каменщик', s:1600, m:6, req:{health:45}},
+    {t:'Бригадир', s:2200, m:8, req:{smarts:20}},
+    {t:'Прораб', s:3000, m:10, req:{smarts:30}},
+    {t:'Агент по недвижимости', s:3600, m:8, req:{charisma:30}, entry:{charisma:30}},
     {t:'Брокер', s:6000, m:12, req:{charisma:45}},
+    {t:'Главный инженер проекта', s:9000, m:12, req:{smarts:50, edu:['college_build','uni_econ','uni_it']}},
     {t:'Девелопер', s:14000, m:18, req:{smarts:55, edu:['college_build','uni_econ','mba']}},
     {t:'Строительный магнат', s:40000, m:24, req:{fame:35, charisma:60}},
+    {t:'Глава строительной империи', s:70000, m:24, req:{fame:55, charisma:70}},
   ]},
   {id:'it', name:'IT и технологии', emoji:'💻', img:[1921326, 270632, 1102797], desc:'Код, стартапы и опционы. Нужны курсы или диплом.', levels:[
     {t:'Стажёр-тестировщик', s:1400, req:{edu:['code','uni_it'], home:1}, entry:{edu:['code','uni_it']}},
     {t:'Junior-разработчик', s:2800, m:6, req:{smarts:40, home:1}, entry:{edu:['uni_it']}},
     {t:'Middle-разработчик', s:5000, m:12, req:{smarts:55, home:1}},
     {t:'Senior-разработчик', s:8500, m:18, req:{smarts:65, home:1}},
-    {t:'Тимлид', s:12000, m:12, req:{charisma:40, home:1}},
-    {t:'Технический директор (CTO)', s:25000, m:24, req:{edu:['uni_it'], smarts:80, charisma:55, home:1}},
+    {t:'Ведущий разработчик', s:10500, m:12, req:{smarts:70, home:1}},
+    {t:'Тимлид', s:13000, m:12, req:{charisma:40, home:1}},
+    {t:'Архитектор ПО', s:16000, m:12, req:{smarts:75, home:1}},
+    {t:'Руководитель разработки', s:20000, m:18, req:{charisma:50, home:1}},
+    {t:'Технический директор (CTO)', s:30000, m:24, req:{edu:['uni_it'], smarts:80, charisma:55, home:1}},
   ]},
   {id:'fin', name:'Финансы', emoji:'💼', img:[4960438, 16902140], desc:'Банки, биржи и хедж-фонды. Большие деньги — большая ответственность.', levels:[
     {t:'Кассир в банке', s:1300, req:{smarts:15, home:1}},
+    {t:'Операционист', s:1700, m:6, req:{smarts:20, home:1}},
     {t:'Кредитный специалист', s:2100, m:8, req:{charisma:20, home:1}},
     {t:'Финансовый аналитик', s:4500, m:12, req:{smarts:50, edu:['college_econ','uni_econ'], home:1}, entry:{edu:['uni_econ']}},
+    {t:'Старший аналитик', s:6000, m:12, req:{smarts:55, home:1}},
     {t:'Трейдер', s:8000, m:12, req:{smarts:60, home:1}},
+    {t:'Ведущий трейдер', s:11000, m:12, req:{smarts:65, home:1}},
     {t:'Портфельный управляющий', s:16000, m:18, req:{smarts:70, charisma:40, home:1}},
     {t:'Инвестиционный директор', s:30000, m:24, req:{edu:['mba'], charisma:55, home:1}},
     {t:'Управляющий хедж-фондом', s:70000, m:24, req:{smarts:85, fame:40, home:1}},
@@ -371,8 +400,10 @@ const TRACKS = [
   {id:'med', name:'Медицина', emoji:'🩺', img:[263337, 4769135], desc:'Долгая учёба, зато уважение и стабильный доход.', levels:[
     {t:'Санитар', s:1100, req:{home:1}},
     {t:'Медбрат / медсестра', s:1800, m:6, req:{edu:['college_med','uni_med'], home:1}, entry:{edu:['college_med','uni_med']}},
+    {t:'Старшая медсестра', s:2400, m:12, req:{edu:['college_med','uni_med'], charisma:25, home:1}},
     {t:'Врач-ординатор', s:3500, m:12, req:{edu:['uni_med'], home:1}, entry:{edu:['uni_med']}},
     {t:'Врач-специалист', s:6500, m:18, req:{smarts:60, home:1}},
+    {t:'Заведующий отделением', s:9500, m:18, req:{charisma:40, home:1}},
     {t:'Хирург', s:13000, m:24, req:{smarts:75, health:60, home:1}},
     {t:'Главный врач', s:22000, m:24, req:{charisma:55, home:1}},
     {t:'Владелец сети клиник', s:45000, m:24, req:{fame:40, smarts:80, home:1}},
@@ -382,41 +413,54 @@ const TRACKS = [
     {t:'Помощник юриста', s:2000, m:8, req:{smarts:35, home:1}},
     {t:'Юрист', s:4000, m:12, req:{edu:['uni_law'], home:1}, entry:{edu:['uni_law']}},
     {t:'Старший юрист', s:7500, m:18, req:{smarts:60, charisma:35, home:1}},
+    {t:'Руководитель практики', s:11000, m:18, req:{charisma:45, home:1}},
     {t:'Партнёр фирмы', s:16000, m:24, req:{charisma:55, item:'suit', home:1}},
     {t:'Управляющий партнёр', s:35000, m:24, req:{fame:35, smarts:75, home:1}},
+    {t:'Основатель юридической империи', s:60000, m:24, req:{fame:50, charisma:70, home:1}},
   ]},
   {id:'show', name:'Шоу-бизнес', emoji:'🎤', img:[1763068, 167636, 16972530], desc:'Из подземного перехода — на стадионы. Решают харизма и слава.', levels:[
     {t:'Уличный музыкант', s:400},
     {t:'Музыкант в баре', s:1000, m:4, req:{charisma:20}},
     {t:'Артист в клубах', s:2500, m:8, req:{charisma:35, fame:10}},
+    {t:'Резидент концертного зала', s:4000, m:10, req:{fame:18}},
     {t:'Гастролирующий артист', s:6000, m:12, req:{fame:25}},
     {t:'Звезда эстрады', s:15000, m:12, req:{fame:45, charisma:55}},
+    {t:'Хедлайнер фестивалей', s:30000, m:12, req:{fame:60}},
     {t:'Суперзвезда', s:60000, m:18, req:{fame:75}},
+    {t:'Легенда сцены', s:100000, m:24, req:{fame:90}},
   ]},
   {id:'blog', name:'Блогинг', emoji:'📱', img:[8117901, 12642999], desc:'Снимай контент и собирай подписчиков. Нужен смартфон.', levels:[
     {t:'Начинающий блогер', s:150, req:{item:'iphone'}},
     {t:'Микро-блогер', s:700, m:4, req:{fame:8, item:'iphone'}},
     {t:'Блогер', s:2500, m:8, req:{fame:20, charisma:25, item:'iphone'}},
+    {t:'Автор с монетизацией', s:4500, m:8, req:{fame:30, item:'iphone'}},
     {t:'Популярный блогер', s:7000, m:12, req:{fame:40, item:'iphone'}},
     {t:'Топ-инфлюенсер', s:20000, m:12, req:{fame:60, item:'iphone'}},
+    {t:'Медиаперсона', s:35000, m:12, req:{fame:70, item:'iphone'}},
     {t:'Медиамагнат', s:55000, m:18, req:{fame:80, smarts:50, item:'iphone'}},
   ]},
   // --- карьеры на стыке образований (нужно 2+ диплома)
   {id:'fintech', combo:1, name:'Финтех', emoji:'💳', img:[16902140, 4960438], desc:'IT + экономика: цифровые банки и платёжные системы.', levels:[
     {t:'Финтех-аналитик', s:6000, req:{eduAll:['uni_it','uni_econ'], home:1}},
+    {t:'Старший финтех-аналитик', s:9000, m:12, req:{eduAll:['uni_it','uni_econ'], smarts:60, home:1}},
     {t:'Руководитель продукта', s:12000, m:12, req:{eduAll:['uni_it','uni_econ'], smarts:65, home:1}},
+    {t:'Вице-президент по продукту', s:18000, m:12, req:{eduAll:['uni_it','uni_econ'], charisma:45, home:1}},
     {t:'Директор цифрового банка', s:28000, m:18, req:{eduAll:['uni_it','uni_econ'], charisma:50, home:1}},
     {t:'Основатель финтех-единорога', s:90000, m:24, req:{eduAll:['uni_it','uni_econ'], fame:40, smarts:85, home:1}},
   ]},
   {id:'biotech', combo:1, name:'Биотех', emoji:'🧬', img:[4769135, 263337], desc:'Медицина + IT: лекарства будущего и геномика.', levels:[
     {t:'Биоинформатик', s:7000, req:{eduAll:['uni_med','uni_it'], home:1}},
+    {t:'Научный сотрудник', s:10000, m:12, req:{eduAll:['uni_med','uni_it'], smarts:70, home:1}},
     {t:'Ведущий исследователь', s:14000, m:12, req:{eduAll:['uni_med','uni_it'], smarts:75, home:1}},
+    {t:'Руководитель лаборатории', s:20000, m:12, req:{eduAll:['uni_med','uni_it'], charisma:40, home:1}},
     {t:'Директор R&D', s:32000, m:18, req:{eduAll:['uni_med','uni_it'], charisma:45, home:1}},
     {t:'Основатель биотех-корпорации', s:100000, m:24, req:{eduAll:['uni_med','uni_it'], fame:45, smarts:90, home:1}},
   ]},
   {id:'mna', combo:1, name:'Слияния и поглощения', emoji:'🤝', img:[20243867, 5856084], desc:'Право + экономика: сделки на миллиарды.', levels:[
     {t:'Юрист по сделкам M&A', s:7500, req:{eduAll:['uni_law','uni_econ'], home:1}},
+    {t:'Старший юрист M&A', s:11000, m:12, req:{eduAll:['uni_law','uni_econ'], smarts:65, home:1}},
     {t:'Партнёр по M&A', s:17000, m:12, req:{eduAll:['uni_law','uni_econ'], charisma:50, home:1}},
+    {t:'Вице-президент по сделкам', s:24000, m:12, req:{eduAll:['uni_law','uni_econ'], charisma:55, home:1}},
     {t:'Директор по сделкам', s:36000, m:18, req:{eduAll:['uni_law','uni_econ'], charisma:60, item:'suit', home:1}},
     {t:'Легенда Уолл-стрит', s:85000, m:24, req:{eduAll:['uni_law','uni_econ'], fame:50, smarts:85, home:1}},
   ]},
@@ -424,19 +468,25 @@ const TRACKS = [
     {t:'Помощник депутата', s:3000, req:{eduAll:['acting'], edu:['uni_law','uni_econ'], home:1}},
     {t:'Депутат горсовета', s:6000, m:12, req:{eduAll:['acting'], edu:['uni_law','uni_econ'], fame:20, charisma:50, home:1}},
     {t:'Мэр города', s:15000, m:18, req:{eduAll:['acting'], edu:['uni_law','uni_econ'], fame:40, home:1}},
+    {t:'Депутат парламента', s:22000, m:18, req:{eduAll:['acting'], edu:['uni_law','uni_econ'], fame:50, home:1}},
     {t:'Губернатор', s:30000, m:24, req:{eduAll:['acting'], edu:['uni_law','uni_econ'], fame:60, charisma:70, home:1}},
     {t:'Министр', s:50000, m:24, req:{eduAll:['acting'], edu:['uni_law','uni_econ'], fame:75, home:1}},
+    {t:'Вице-премьер', s:75000, m:24, req:{eduAll:['acting'], edu:['uni_law','uni_econ'], fame:80, home:1}},
     {t:'Президент', s:120000, m:36, req:{eduAll:['acting'], edu:['uni_law','uni_econ'], fame:90, charisma:85, home:1}},
   ]},
   {id:'ceo', combo:1, name:'Топ-менеджмент', emoji:'🏢', img:[19821492, 67301], desc:'MBA + второй диплом: руководить корпорациями.', levels:[
     {t:'Директор по развитию', s:15000, req:{eduAll:['mba'], uni:2, home:1}},
+    {t:'Вице-президент', s:20000, m:12, req:{eduAll:['mba'], uni:2, charisma:55, home:1}},
     {t:'Операционный директор', s:28000, m:12, req:{eduAll:['mba'], uni:2, charisma:60, home:1}},
+    {t:'Исполнительный директор', s:40000, m:18, req:{eduAll:['mba'], uni:2, fame:30, home:1}},
     {t:'Генеральный директор корпорации', s:60000, m:24, req:{eduAll:['mba'], uni:2, fame:40, home:1}},
     {t:'Председатель совета директоров', s:150000, m:24, req:{eduAll:['mba'], uni:2, fame:65, smarts:85, home:1}},
   ]},
   {id:'gamedev', combo:1, name:'Геймдев', emoji:'🎮', img:[30469973, 30469971], desc:'Курсы программирования + актёрская школа: создавать игры-хиты.', levels:[
     {t:'Гейм-дизайнер', s:3500, req:{eduAll:['code','acting']}},
+    {t:'Ведущий гейм-дизайнер', s:6000, m:12, req:{eduAll:['code','acting'], smarts:50}},
     {t:'Креативный директор', s:9000, m:12, req:{eduAll:['code','acting'], charisma:45}},
+    {t:'Продюсер игр', s:14000, m:12, req:{eduAll:['code','acting'], charisma:50}},
     {t:'Глава игровой студии', s:22000, m:18, req:{eduAll:['code','acting'], fame:30}},
     {t:'Создатель игры-хита', s:70000, m:24, req:{eduAll:['code','acting'], fame:60, smarts:70}},
   ]},
@@ -573,6 +623,59 @@ ITEMS.forEach(i => { if(!i.img.includes(FB_CAT[i.cat])) i.img.push(FB_CAT[i.cat]
 RENTALS.forEach(r => { if(r.id !== 'street') r.img.push('fb:flat'); });
 TRACKS.forEach(t => t.img.push('fb:commerce'));
 const ITEM = Object.fromEntries(ITEMS.map(i => [i.id, i]));
+
+/* =========================================================
+   УЛУЧШЕНИЯ БИЗНЕСА: ремонт, оборудование, реклама, инновации.
+   У каждого улучшения своё фото (Open Images, CC BY 2.0).
+   ========================================================= */
+const UPG = [
+  {emoji:'🛠️', kind:'Ремонт', cost:0.2, profit:0.15, value:0.12},
+  {emoji:'⚙️', kind:'Оборудование', cost:0.3, profit:0.2, value:0.15},
+  {emoji:'📣', kind:'Реклама', cost:0.15, profit:0.12, value:0.08},
+  {emoji:'🤖', kind:'Инновации', cost:0.45, profit:0.3, value:0.25},
+];
+const BIZ_UPG = {
+  b_shawarma:[['Новый современный киоск', 'oi:d2604869238fb9b5'], ['Профессиональный гриль', 'oi:664b35d93d282d7a'], ['Яркое меню-вывеска', 'oi:3467df5395bf3835'], ['Свой фудтрак', 'oi:a671ace942f5dcd5']],
+  b_barber:[['Ремонт фасада в ретро-стиле', 'oi:41bed007b65875e4'], ['Винтажные кресла и инструменты', 'oi:e5311bab2fa65af0'], ['Классическая вывеска', 'oi:e645a5657b848cc7'], ['Ещё мастера и онлайн-запись', 'oi:bfcd109802697e0d']],
+  b_bakery:[['Новая витрина и фасад', 'oi:086b621ac776040a'], ['Печи и выпечка премиум-класса', 'oi:bfd6a7e0581cbc22'], ['Вывеска и брендинг', 'oi:f0f9be8362cb926e'], ['Фургоны доставки по городу', 'oi:7d490acc72896c88']],
+  b_carwash:[['Новое здание мойки', 'oi:a7cef7f15b7ff579'], ['Автоматический моечный тоннель', 'oi:aa7e941d00fb9c06'], ['Яркая вывеска у трассы', 'oi:c85d3758b5ff864a'], ['Роботизированные щётки', 'oi:ab2f37e5aa099a9b']],
+  b_coffee:[['Уютный ремонт зала', 'oi:735b09e16f48a615'], ['Профессиональные кофемашины', 'oi:d7cbfd0b2dbf3d67'], ['Неоновая вывеска', 'oi:f269c0bbde721b6d'], ['Вторая кофейня в центре', 'oi:2df992d10a4ea072']],
+  b_service:[['Новое здание сервиса', 'oi:7f882ee0e6d948be'], ['Подъёмники и инструмент', 'oi:df09b1d4ec891240'], ['Стенд на автовыставке', 'oi:51e5ae393295296a'], ['Компьютерная диагностика', 'oi:b08f3fbed7920e34']],
+  b_restaurant:[['Ремонт зала в классическом стиле', 'oi:cc67cecc46979268'], ['Профессиональная кухня', 'oi:53ca81085d72704b'], ['Вывеска и реклама', 'oi:7f31b31e93784d3e'], ['Ужины при свечах и сомелье', 'oi:0719a56621f96a64']],
+  b_club:[['Ремонт бара', 'oi:6cb01826797e6afb'], ['Сцена, свет и звук', 'oi:9086d2d6a71a1e0a'], ['Билборды по городу', 'oi:9b5635760011caeb'], ['Лазерное шоу', 'oi:cef4ed7531b24bec']],
+  b_gym:[['Ремонт зала', 'oi:6abf3d601b565441'], ['Новые тренажёры', 'oi:81329230897059c1'], ['Неоновая вывеска', 'oi:a460eebe36a5d740'], ['Кардиозона с умными дорожками', 'oi:1efd1996b5c03469']],
+  b_dealer:[['Новый стеклянный шоурум', 'oi:d56e59a78cdd2f4b'], ['Демонстрационный зал', 'oi:893a0cc581e89655'], ['Большая вывеска марки', 'oi:20d8369976f7167a'], ['Ночная подсветка и онлайн-продажи', 'oi:c38e4ee3838f35a8']],
+  b_market:[['Ремонт торговых залов', 'oi:66af031aadbd4064'], ['Новые стеллажи и холодильники', 'oi:2022a99a358b8ac0'], ['Вывески и реклама', 'oi:0f7a12bc463c7eb3'], ['Свежая зона и умные кассы', 'oi:0b64d9a9154c781f']],
+  b_film:[['Своя съёмочная площадка', 'oi:d79d85690161da4c'], ['Кинокамеры нового поколения', 'oi:28a83caa287466ad'], ['Премьеры на красной дорожке', 'oi:340d8b3bfb99f8d6'], ['Пресс-центр и стриминг', 'oi:f7b97bf6db7b3cf9']],
+  b_it:[['Современный open space', 'oi:372ff24f213954d7'], ['Новое оборудование и серверы', 'oi:339a860b23455a22'], ['Выступления на конференциях', 'oi:2e7900f96ebcaa4b'], ['Отдел робототехники и ИИ', 'oi:244d00bb1c39bcc6']],
+  b_build:[['Новая строительная площадка', 'oi:cf295724fdb7cba7'], ['Тяжёлые автокраны', 'oi:d3ac966f5ced91f8'], ['Рекламные баннеры на объектах', 'oi:3968008aa39d2f1e'], ['Башенные краны и BIM-проекты', 'oi:0ce1e0ebc4e5ddbd']],
+  b_football:[['Реконструкция стадиона', 'oi:f64a71b152acf0b7'], ['Новый газон и шоу перед матчем', 'oi:be5523c91bc1446c'], ['Медиаэкраны и спонсоры', 'oi:745b4b19dbfe729a'], ['Новая арена мирового уровня', 'oi:a6d833f4cce75e3f']],
+  b_airline:[['Бизнес-залы в аэропортах', 'oi:d90cc01d45451b5c'], ['Флагманы Airbus A380', 'oi:bcb90e89b33feb83'], ['Новая ливрея и реклама', 'oi:e58e1b4c924d9819'], ['Лайнеры Boeing 787', 'oi:b52298e04958df17']],
+};
+const upMult = a => (a.ups || []).reduce((m, i) => m * (1 + UPG[i].profit), 1);
+const upValMult = a => (a.ups || []).reduce((m, i) => m * (1 + UPG[i].value), 1);
+const upCost = (a, i) => Math.round(ITEM[a.id].price * UPG[i].cost);
+const bizProfitEst = a => ITEM[a.id].profit * (a.value / (ITEM[a.id].price * upValMult(a))) * upMult(a);
+function assetImg(a){
+  const it = ITEM[a.id];
+  if(it.cat === 'biz' && a.ups && a.ups.length) return [BIZ_UPG[a.id][a.ups[a.ups.length - 1]][1], ...it.img];
+  return it.img;
+}
+function bizUpgrade(uid, i){
+  const a = S.assets.find(x => x.uid === uid); if(!a) return;
+  a.ups = a.ups || [];
+  if(a.ups.includes(i)) return;
+  const cost = upCost(a, i), u = UPG[i], [name, img] = BIZ_UPG[a.id][i];
+  if(S.money < cost){ toast('Не хватает денег'); return; }
+  S.money -= cost;
+  a.ups.push(i);
+  a.value *= 1 + u.value;
+  logMsg(`${u.emoji} ${ITEM[a.id].name}: ${name} (−${money(cost).slice(1)})`);
+  modalQueue.push({title:'Бизнес преобразился!', img:[img, ...ITEM[a.id].img], emoji:u.emoji, html:`<p><b>${esc(ITEM[a.id].name)}</b>: ${esc(name)}.</p><p>Прибыль <b class="ok">+${Math.round(u.profit * 100)}%</b>, стоимость бизнеса <b class="ok">+${Math.round(u.value * 100)}%</b>.</p>`, choices:[{label:'Отлично!', cls:'pri'}]});
+  sfx('buy');
+  showModal(); afterChange();
+}
+
 const RENTAL = Object.fromEntries(RENTALS.map(r => [r.id, r]));
 const TRACK = Object.fromEntries(TRACKS.map(t => [t.id, t]));
 const EDUM = Object.fromEntries(EDU.map(e => [e.id, e]));
@@ -584,26 +687,27 @@ const countOwned = id => S.assets.filter(a => a.id === id).length;
    ========================================================= */
 const ACTIONS = [
   // подработка
-  {id:'dogs', g:'job', name:'Выгуливать собак', emoji:'🐕', en:15, money:90, eff:{happy:1}},
-  {id:'flyers', g:'job', name:'Раздавать листовки', emoji:'📄', en:20, money:120, eff:{happy:-1}},
-  {id:'wash', g:'job', name:'Мыть машины', emoji:'🧽', en:25, money:180, eff:{health:-0.5}},
-  {id:'cleaning', g:'job', name:'Уборка квартир', emoji:'🧹', en:25, money:220},
-  {id:'banquet', g:'job', name:'Официант на банкете', emoji:'🍾', en:25, money:250, eff:{charisma:0.3}},
-  {id:'courier', g:'job', name:'Курьер', emoji:'🚲', en:30, money:260, eff:{health:1}},
-  {id:'furniture', g:'job', name:'Сборка мебели', emoji:'🪛', en:30, money:320, req:{smarts:20}},
-  {id:'loader', g:'job', name:'Грузчик', emoji:'📦', en:35, money:340, eff:{health:-3}},
-  {id:'busker', g:'job', name:'Музыка в переходе', emoji:'🎸', en:20, money:150, req:{item:'guitar'}, eff:{fame:0.4, charisma:0.3}},
-  {id:'promoter', g:'job', name:'Промоутер в клубе', emoji:'🎟️', en:20, money:300, req:{charisma:30}},
+  // заработок растёт ступенями (~×1,3), у многих подработок есть бонус к характеристикам
+  {id:'dogs', g:'job', name:'Выгуливать собак', emoji:'🐕', en:15, money:60, eff:{happy:2, health:0.5}},
+  {id:'flyers', g:'job', name:'Раздавать листовки', emoji:'📄', en:15, money:80, eff:{charisma:0.4}},
+  {id:'busker', g:'job', name:'Музыка в переходе', emoji:'🎸', en:20, money:90, req:{item:'guitar'}, eff:{fame:1, happy:2, charisma:0.3}},
+  {id:'wash', g:'job', name:'Мыть машины', emoji:'🧽', en:20, money:110, eff:{health:0.5}},
+  {id:'cleaning', g:'job', name:'Уборка квартир', emoji:'🧹', en:25, money:150, eff:{happy:-1}},
+  {id:'banquet', g:'job', name:'Официант на банкете', emoji:'🍾', en:25, money:200, eff:{charisma:0.6}},
+  {id:'courier', g:'job', name:'Курьер', emoji:'🚲', en:30, money:260, eff:{health:1.5}},
+  {id:'furniture', g:'job', name:'Сборка мебели', emoji:'🪛', en:30, money:340, req:{smarts:20}, eff:{smarts:0.4}},
+  {id:'loader', g:'job', name:'Грузчик', emoji:'📦', en:35, money:430, eff:{health:-2}},
+  {id:'promoter', g:'job', name:'Промоутер в клубе', emoji:'🎟️', en:20, money:520, req:{charisma:30}, eff:{charisma:0.8, fame:0.4}},
   {id:'resell', g:'job', name:'Перепродать кроссовки', emoji:'👟', en:15, cost:500},
-  {id:'tutor', g:'job', name:'Репетиторство', emoji:'📐', en:20, money:400, req:{smarts:45}},
-  {id:'phones', g:'job', name:'Ремонт телефонов', emoji:'📱', en:25, money:450, req:{smarts:35}},
-  {id:'delivery', g:'job', name:'Доставка на своей машине', emoji:'📦', en:30, money:500, req:{car:1}},
-  {id:'taxi', g:'job', name:'Таксовать на своей машине', emoji:'🚕', en:35, money:700, req:{car:1}},
-  {id:'dj', g:'job', name:'Диджей на вечеринке', emoji:'🎧', en:25, money:700, req:{charisma:40}, eff:{fame:0.5}},
-  {id:'photo', g:'job', name:'Свадебный фотограф', emoji:'📷', en:30, money:900, req:{item:'camera'}},
-  {id:'stream', g:'job', name:'Стрим игр', emoji:'🖥️', en:25, money:'stream', req:{item:'gamingpc'}, eff:{fame:0.6}},
-  {id:'freelance', g:'job', name:'Фриланс-проект', emoji:'💻', en:30, money:1300, req:{item:'macbook', smarts:45}},
-  {id:'consult', g:'job', name:'Бизнес-консалтинг', emoji:'📊', en:30, money:6000, req:{item:'suit', smarts:70, charisma:50}},
+  {id:'tutor', g:'job', name:'Репетиторство', emoji:'📐', en:20, money:650, req:{smarts:45}, eff:{smarts:1}},
+  {id:'phones', g:'job', name:'Ремонт телефонов', emoji:'📱', en:25, money:800, req:{smarts:35}, eff:{smarts:0.6}},
+  {id:'delivery', g:'job', name:'Доставка на своей машине', emoji:'📦', en:30, money:950, req:{car:1}},
+  {id:'taxi', g:'job', name:'Таксовать на своей машине', emoji:'🚕', en:35, money:1150, req:{car:1}, eff:{charisma:0.4}},
+  {id:'dj', g:'job', name:'Диджей на вечеринке', emoji:'🎧', en:25, money:1400, req:{charisma:40}, eff:{fame:1, happy:3}},
+  {id:'photo', g:'job', name:'Свадебный фотограф', emoji:'📷', en:30, money:1700, req:{item:'camera'}, eff:{happy:2, fame:0.3}},
+  {id:'stream', g:'job', name:'Стрим игр', emoji:'🖥️', en:25, money:'stream', req:{item:'gamingpc'}, eff:{fame:1.2, happy:1}},
+  {id:'freelance', g:'job', name:'Фриланс-проект', emoji:'💻', en:30, money:2600, req:{item:'macbook', smarts:45}, eff:{smarts:1}},
+  {id:'consult', g:'job', name:'Бизнес-консалтинг', emoji:'📊', en:30, money:8000, req:{item:'suit', smarts:70, charisma:50}, eff:{charisma:1, smarts:0.5}},
   // развитие
   {id:'gym', g:'self', name:'Спортзал', emoji:'🏋️', en:15, cost:40, eff:{health:3, happy:1}},
   {id:'read', g:'self', name:'Читать книги', emoji:'📚', en:10, eff:{smarts:'read'}},
@@ -722,6 +826,7 @@ function imgErr(img){
 let S = null;
 let TAB = 'life';
 let SHOPCAT = 'realty';
+let ASSETCAT = 'all';
 let OPEN_TRACK = null;
 const OPEN_GROUPS = {job:true, self:false, fun:false, risk:false};
 const SAVE_KEY = 'gryaz_v1';
@@ -739,6 +844,7 @@ function newGame(name, avatar, mode){
     job: null, edu: [], study: null,
     assets: [], uid: 1,
     inv: {stocks:{u:0, p:100, cost:0}, crypto:{u:0, p:100, cost:0}},
+    deposits: [],
     reIdx: 1,
     goals: {}, topReached:false, won:false,
     lastPassive: 0, lastIncome: 0, lastReport: null,
@@ -762,6 +868,13 @@ function load(){
     d.assets = d.assets.filter(a => ITEM[a.id]);
     if(d.home && d.home.type === 'own' && !d.assets.some(a => a.uid === d.home.uid)) d.home = {type:'rent', id:'street'};
     if(d.job && !TRACK[d.job.track]) d.job = null;
+    if(d.job){ // лестницы стали длиннее — ищем должность по названию
+      const lv = TRACK[d.job.track].levels;
+      const byTitle = d.job.t ? lv.findIndex(l => l.t === d.job.t) : -1;
+      d.job.level = byTitle >= 0 ? byTitle : Math.min(d.job.level, lv.length - 1);
+      d.job.t = lv[d.job.level].t;
+    }
+    d.deposits = d.deposits || [];
     return d;
   }catch(e){ return null; }
 }
@@ -790,14 +903,17 @@ function sellPrice(a){
 }
 function invValue(){ return S.inv.stocks.u * S.inv.stocks.p + S.inv.crypto.u * S.inv.crypto.p; }
 function assetsValue(){ return S.assets.reduce((s, a) => s + assetValue(a), 0); }
-function netWorth(){ return S.money + assetsValue() + invValue() - S.debt; }
+const depValue = () => (S.deposits || []).reduce((s, d) => s + d.amt, 0);
+function netWorth(){ return S.money + assetsValue() + invValue() + depValue() - S.debt; }
 function owns(id){ return S.assets.some(a => a.id === id); }
 function ownsCat(cat){ return S.assets.some(a => ITEM[a.id].cat === cat); }
 function curPrice(it){
   if(['realty','commerce'].includes(it.cat)) return Math.round(it.price * S.reIdx);
   return it.price;
 }
-function salary(){ return S.job ? Math.round(TRACK[S.job.track].levels[S.job.level].s * eduBonus()) : 0; }
+/* базовая зарплата (с бонусом за дипломы) и выплата: 100% эффективности = 100% базы */
+function baseSalary(){ return S.job ? Math.round(TRACK[S.job.track].levels[S.job.level].s * eduBonus()) : 0; }
+function salary(){ return S.job ? Math.round(baseSalary() * clamp(S.job.perf) / 100) : 0; }
 function homeComfort(){
   if(S.home.type === 'own'){ const a = S.assets.find(x => x.uid === S.home.uid); return a ? ITEM[a.id].comfort : -5; }
   return RENTAL[S.home.id].comfort;
@@ -821,7 +937,7 @@ function maxEnergy(){
 function creditLimit(){
   const inc = Math.max(0, S.lastIncome);
   const prop = S.assets.reduce((s, a) => s + (['realty','commerce','island','biz'].includes(ITEM[a.id].cat) ? a.value * 0.6 : a.value * 0.3), 0);
-  return Math.round(2000 + inc * 18 + prop + invValue() * 0.3);
+  return Math.round(2000 + inc * 18 + prop + invValue() * 0.3 + depValue() * 0.8);
 }
 const creditAvail = () => Math.max(0, creditLimit() - S.debt);
 
@@ -899,9 +1015,9 @@ function doAction(id){
   if(cost) S.money -= cost;
   let msg = '';
   if(a.money){
-    let base = a.money === 'stream' ? 150 + S.fame * 25 : a.money;
+    let base = a.money === 'stream' ? 150 + S.fame * 40 : a.money;
     if(id === 'courier' && owns('bike')) base *= 1.4;
-    if(id === 'busker') base += rint(0, 200);
+    if(id === 'busker') base += rint(0, 250);
     const earned = Math.round(base * rnd(0.85, 1.15));
     S.money += earned; msg = `${a.emoji} ${a.name}: ${money(earned, true)}`;
     if(id === 'taxi' || id === 'delivery'){ const car = personalCar(); if(car) car.cond = clamp(car.cond - 2); }
@@ -992,8 +1108,9 @@ function askPromotion(){
 }
 function promote(prefix){
   const tr = TRACK[S.job.track];
-  S.job.level++; S.job.perf = 45; S.job.months = 0;
+  S.job.level++; S.job.perf = Math.max(50, S.job.perf - 15); S.job.months = 0;
   const lv = tr.levels[S.job.level];
+  S.job.t = lv.t;
   S.happy = clamp(S.happy + 10); S.fame = clamp(S.fame + 1);
   if(S.job.level === tr.levels.length - 1) S.topReached = true;
   logMsg(`${prefix} Новая должность: ${lv.t}, ${money(lv.s)}/мес`);
@@ -1004,7 +1121,7 @@ function apply(tid, li){
   if(!canApply(tid, li)){ toast('Требования не выполнены'); return; }
   const tr = TRACK[tid], lv = tr.levels[li];
   const doIt = () => {
-    S.job = {track:tid, level:li, perf:40, months:0, shifts:0, yShifts:0, yMonth:0};
+    S.job = {track:tid, level:li, t:lv.t, perf:60, months:0, shifts:0, yShifts:0, yMonth:0};
     if(li === tr.levels.length - 1) S.topReached = true;
     S.energy = Math.min(S.energy, maxEnergy());
     logMsg(`👷 Вы устроились: ${lv.t} (${money(lv.s)}/мес)`);
@@ -1057,6 +1174,7 @@ function buy(id, mortgage=false){
   S.fame = clamp(S.fame + p * 0.3);
   if(it.gain && it.gain.charisma) S.charisma = clamp(S.charisma + it.gain.charisma);
   logMsg(`🛍️ Куплено: ${it.name} за ${money(price)}` + (loan ? ` (ипотека ${money(loan)})` : ''));
+  sfx('buy');
   closeModal();
   // предложить заселиться, если живёт хуже
   if(it.cat === 'realty' && it.comfort > homeComfort()){
@@ -1133,6 +1251,26 @@ function invSell(kind, frac){
   toast(`Продано на ${money(val)}`);
   afterChange();
 }
+/* вклады: ставка годовых, капитализация ежемесячно, досрочно не снять */
+const DEP_TERMS = [{m:3, r:0.04}, {m:6, r:0.055}, {m:12, r:0.07}, {m:24, r:0.085}, {m:60, r:0.10}];
+let DEPTERM = 12;
+const depFinal = (amt, t) => amt * Math.pow(1 + t.r / 12, t.m);
+function depOpen(amt){
+  const t = DEP_TERMS.find(x => x.m === DEPTERM);
+  if(amt === 'all') amt = Math.floor(S.money);
+  if(amt < 100){ toast('Минимальный вклад — $100'); return; }
+  if(S.money < amt){ toast('Не хватает денег'); return; }
+  const ok = () => {
+    S.money -= amt;
+    S.deposits.push({amt, start:amt, rate:t.r, months:t.m, left:t.m, opened:S.t});
+    logMsg(`🏦 Открыт вклад ${money(amt)} на ${t.m} мес. под ${(t.r * 100).toFixed(1).replace('.', ',')}% годовых`);
+    toast('Вклад открыт');
+    afterChange();
+  };
+  modalQueue.unshift({title:'Открыть вклад?', emoji:'🏦', html:`<p>${money(amt)} на <b>${t.m} мес.</b> под <b>${(t.r * 100).toFixed(1).replace('.', ',')}%</b> годовых с ежемесячной капитализацией.</p><p>В конце срока вы получите <b class="ok">${money(depFinal(amt, t))}</b>.</p><p class="sub">⚠️ Досрочно забрать деньги нельзя.</p>`,
+    choices:[{label:'Открыть вклад', cls:'pri', fn:ok}, {label:'Отмена'}]});
+  showModal();
+}
 function loanTake(amt){
   amt = Math.min(amt, creditAvail());
   if(amt < 100){ toast('Банк отказал'); return; }
@@ -1162,7 +1300,7 @@ function nextMonth(){
   // --- работа
   if(S.job){
     const tr = TRACK[S.job.track], lv = tr.levels[S.job.level];
-    add(R.inc, '💼 Зарплата: ' + lv.t + (eduBonus() > 1 ? ` (+${Math.round((eduBonus() - 1) * 100)}% за дипломы)` : ''), salary());
+    add(R.inc, `💼 Зарплата: ${lv.t} (${Math.round(S.job.perf)}% от ${money(baseSalary())})`, salary());
     S.job.months++;
     const shifts = S.job.shifts || 0;
     let dp = shifts > 0 ? 3 : -1;
@@ -1233,7 +1371,7 @@ function nextMonth(){
       const mg = 0.75 + (S.smarts + S.charisma) / 400;
       bizN[a.id] = (bizN[a.id] || 0) + 1;
       const compet = Math.pow(0.85, bizN[a.id] - 1); // каждая следующая точка того же бизнеса приносит меньше
-      let pr = it.profit * (a.value / it.price) * mg * compet * (1 + gauss() * it.vol);
+      let pr = bizProfitEst(a) * mg * compet * (1 + gauss() * it.vol);
       if(chance(0.06)) pr = -it.profit * rnd(0.2, 0.6);
       bizSum += pr;
       continue;
@@ -1265,6 +1403,17 @@ function nextMonth(){
     if(S.debt < 1) S.debt = 0;
   }
 
+  // --- вклады: сложный процент, капитализация каждый месяц
+  S.deposits = (S.deposits || []).filter(d => {
+    d.amt *= 1 + d.rate / 12;
+    d.left--;
+    if(d.left > 0) return true;
+    S.money += d.amt;
+    R.notes.push(`🏦 Вклад закрыт: вернулось ${money(d.amt)} (вложено ${money(d.start)}, доход ${money(d.amt - d.start, true)})`);
+    logMsg(`🏦 Вклад на ${d.months} мес. закрыт: ${money(d.amt)}`);
+    return false;
+  });
+
   // --- применяем деньги
   const incTotal = R.inc.reduce((s, x) => s + x[1], 0);
   const expTotal = R.exp.reduce((s, x) => s + x[1], 0);
@@ -1280,9 +1429,9 @@ function nextMonth(){
 
   // --- здоровье, счастье, слава
   const comfort = homeComfort();
-  S.happy += comfort * 0.5 - 1 + ls.happy + Math.min(5, prestige * 0.08) + (S.job ? 0.5 : 0);
+  S.happy += comfort * 0.5 - 2 + ls.happy + Math.min(5, prestige * 0.08) + (S.job ? 0.5 : 0); // быт и стресс
   if(!S.job && age() > 22 && netWorth() < 1e6) S.happy -= 1.5;
-  S.health += ls.health;
+  S.health += ls.health - 0.7; // естественный износ организма
   if(S.home.type === 'rent' && S.home.id === 'street') S.health -= 4;
   if(S.happy < 15) S.health -= 1;
   const ag = age();
@@ -1290,9 +1439,9 @@ function nextMonth(){
   if(ag >= 55) S.health -= 0.35;
   if(ag >= 70) S.health -= 0.6;
   if(ag >= 85) S.health -= 1.2;
-  if(S.health < 70 && !(S.home.type === 'rent' && S.home.id === 'street') && ag < 60) S.health += ls.id === 'eco' ? 0.5 : 0.8;
+  if(S.health < 45 && !(S.home.type === 'rent' && S.home.id === 'street') && ag < 60 && ls.id !== 'eco') S.health += 0.4;
   S.fame = S.fame + Math.min(1.5, prestige * 0.015) - 0.25;
-  S.happy += (50 - S.happy) * 0.08; // настроение стремится к норме
+  S.happy += (50 - S.happy) * 0.04; // настроение слегка стремится к норме
   S.health = clamp(S.health); S.happy = clamp(S.happy); S.fame = clamp(S.fame);
 
   // --- отрицательный баланс
@@ -1550,6 +1699,149 @@ function checkGoals(){
 }
 
 /* =========================================================
+   МУЗЫКА: генеративный lounge / джаз / блюз на Web Audio.
+   Аккорды электропиано, бас, щётки и тарелки, импровизация.
+   ========================================================= */
+const MUSIC_KEY = 'uphill_music';
+const STYLES = {
+  lounge:{name:'Lounge', bpm:84, swing:0.5,
+    prog:[[48,55,59,62,64],[45,52,55,59,60],[50,57,60,64,65],[43,53,57,59,64]], // Cmaj9 Am9 Dm9 G13
+    scale:[72,74,76,79,81,84]},
+  jazz:{name:'Джаз', bpm:116, swing:0.64,
+    prog:[[50,57,60,65],[43,53,59,64],[48,55,59,64],[45,55,61,64]], // Dm9 G13 Cmaj7 A7
+    scale:[72,74,76,77,79,81,83,84]},
+  blues:{name:'Блюз', bpm:78, swing:0.67,
+    prog:[[45,55,61,64],[45,55,61,64],[45,55,61,64],[45,55,61,64],[50,60,66,69],[50,60,66,69],[45,55,61,64],[45,55,61,64],[52,62,68,71],[50,60,66,69],[45,55,61,64],[52,62,68,71]], // 12 тактов в A
+    scale:[69,72,74,75,76,79,81]},
+};
+const MUSIC = {ctx:null, out:null, on:true, style:'lounge', next:0, step:0, timer:0, noise:null};
+try{ const m = JSON.parse(localStorage.getItem(MUSIC_KEY) || 'null'); if(m){ MUSIC.on = !!m.on; if(STYLES[m.style]) MUSIC.style = m.style; } }catch(e){}
+const midiHz = n => 440 * Math.pow(2, (n - 69) / 12);
+function musicSave(){ try{ localStorage.setItem(MUSIC_KEY, JSON.stringify({on:MUSIC.on, style:MUSIC.style})); }catch(e){} }
+function audioInit(){
+  if(MUSIC.ctx) return MUSIC.ctx;
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if(!AC) return null;
+  const ctx = new AC();
+  const out = ctx.createGain(); out.gain.value = 0.22;
+  const comp = ctx.createDynamicsCompressor();
+  const delay = ctx.createDelay(1); delay.delayTime.value = 0.32;
+  const fb = ctx.createGain(); fb.gain.value = 0.28;
+  const wet = ctx.createGain(); wet.gain.value = 0.22;
+  out.connect(comp); out.connect(delay); delay.connect(fb); fb.connect(delay); delay.connect(wet); wet.connect(comp);
+  comp.connect(ctx.destination);
+  const buf = ctx.createBuffer(1, ctx.sampleRate, ctx.sampleRate), d = buf.getChannelData(0);
+  for(let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+  Object.assign(MUSIC, {ctx, out, noise:buf});
+  return ctx;
+}
+function envGain(t, a, dur, peak){
+  const g = MUSIC.ctx.createGain();
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(peak, t + a);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  return g;
+}
+function epNote(n, t, dur, vel){ // электропиано: синус + обертон + мягкий фильтр
+  const c = MUSIC.ctx, g = envGain(t, 0.01, dur, vel), f = c.createBiquadFilter();
+  f.type = 'lowpass'; f.frequency.value = 2400;
+  [[1, 1], [2, 0.18], [3.01, 0.05]].forEach(([m, v]) => {
+    const o = c.createOscillator(), og = c.createGain();
+    o.type = m === 1 ? 'triangle' : 'sine'; o.frequency.value = midiHz(n) * m; og.gain.value = v;
+    o.connect(og); og.connect(f); o.start(t); o.stop(t + dur + 0.05);
+  });
+  f.connect(g); g.connect(MUSIC.out);
+}
+function bassNote(n, t, dur, vel=0.5){
+  const c = MUSIC.ctx, o = c.createOscillator(), g = envGain(t, 0.008, dur, vel), f = c.createBiquadFilter();
+  o.type = 'triangle'; o.frequency.value = midiHz(n); f.type = 'lowpass'; f.frequency.value = 520;
+  o.connect(f); f.connect(g); g.connect(MUSIC.out); o.start(t); o.stop(t + dur + 0.05);
+}
+function drum(kind, t, vel=0.3){
+  const c = MUSIC.ctx;
+  if(kind === 'kick'){
+    const o = c.createOscillator(), g = envGain(t, 0.003, 0.28, vel);
+    o.frequency.setValueAtTime(110, t); o.frequency.exponentialRampToValueAtTime(42, t + 0.2);
+    o.connect(g); g.connect(MUSIC.out); o.start(t); o.stop(t + 0.3); return;
+  }
+  const s = c.createBufferSource(), f = c.createBiquadFilter();
+  s.buffer = MUSIC.noise;
+  const len = kind === 'ride' ? 0.35 : kind === 'brush' ? 0.18 : 0.05;
+  f.type = kind === 'brush' ? 'bandpass' : 'highpass'; f.frequency.value = kind === 'brush' ? 1800 : kind === 'ride' ? 6500 : 8000;
+  const g = envGain(t, kind === 'brush' ? 0.02 : 0.002, len, vel);
+  s.connect(f); f.connect(g); g.connect(MUSIC.out); s.start(t, Math.random() * 0.5); s.stop(t + len + 0.02);
+}
+/* один шаг = восьмая; 8 шагов = такт */
+function musicStep(i, t, beat){
+  const st = STYLES[MUSIC.style], bar = Math.floor(i / 8), pos = i % 8;
+  const ch = st.prog[bar % st.prog.length], root = ch[0] - 12;
+  if(MUSIC.style === 'jazz'){
+    if(pos % 2 === 0){ // шагающий бас четвертями
+      const walk = [root, root + 4, root + 7, root + (Math.random() < 0.5 ? 9 : 6)];
+      bassNote(walk[pos / 2], t, beat * 0.9, 0.45);
+      drum('ride', t, 0.08);
+    }
+    if(pos === 3 || pos === 7) drum('ride', t, 0.06);
+    if(pos === 2 || pos === 6) drum('brush', t, 0.07);
+    if(pos === 3 || (pos === 6 && Math.random() < 0.5)) ch.slice(1).forEach(n => epNote(n, t, beat * 1.2, 0.05));
+  } else if(MUSIC.style === 'blues'){
+    const pat = [0, 7, 9, 7]; // буги-шаффл
+    if(pos % 2 === 0) bassNote(root + pat[pos / 2], t, beat * 0.8, 0.45);
+    drum('hat', t, pos % 2 ? 0.04 : 0.07);
+    if(pos === 0 || pos === 4) drum('kick', t, 0.25);
+    if(pos === 2 || pos === 6) drum('brush', t, 0.1);
+    if(pos === 1 || pos === 5) ch.slice(1).forEach(n => epNote(n, t, beat * 0.6, 0.045));
+  } else { // lounge: босса-нова
+    const bpat = {0:root, 3:root + 7, 4:root + 7, 7:root};
+    if(bpat[pos] !== undefined) bassNote(bpat[pos], t, beat * 0.7, 0.42);
+    drum('hat', t, 0.035);
+    if(pos === 0 || pos === 4) drum('kick', t, 0.18);
+    if(pos === 3 || pos === 6) drum('brush', t, 0.06);
+    if(pos === 0 || pos === 3 || pos === 5) ch.slice(1).forEach(n => epNote(n, t, beat * (pos === 0 ? 1.8 : 0.9), 0.04));
+  }
+  // импровизация: редкие ноты из лада поверх аккордов
+  if(Math.random() < (MUSIC.style === 'blues' ? 0.3 : 0.22)){
+    const n = pick(st.scale) + (Math.random() < 0.15 ? -12 : 0);
+    epNote(n, t, beat * (Math.random() < 0.3 ? 1.5 : 0.6), 0.06);
+  }
+}
+function musicTick(){
+  const c = MUSIC.ctx; if(!c) return;
+  const st = STYLES[MUSIC.style], beat = 60 / st.bpm, eighth = beat / 2;
+  while(MUSIC.next < c.currentTime + 0.25){
+    const off = MUSIC.step % 2 ? (st.swing - 0.5) * beat : 0; // свинг: задерживаем слабые восьмые
+    musicStep(MUSIC.step, MUSIC.next + off, beat);
+    MUSIC.next += eighth; MUSIC.step++;
+  }
+}
+function musicStart(){
+  if(!MUSIC.on) return;
+  const c = audioInit(); if(!c) return;
+  if(c.state === 'suspended') c.resume();
+  if(MUSIC.timer) return;
+  MUSIC.next = c.currentTime + 0.1; MUSIC.step = 0;
+  MUSIC.timer = setInterval(musicTick, 60);
+}
+function musicStop(){ clearInterval(MUSIC.timer); MUSIC.timer = 0; }
+function musicToggle(){
+  MUSIC.on = !MUSIC.on; musicSave();
+  if(MUSIC.on) musicStart(); else musicStop();
+  if(S) render();
+}
+function musicStyle(x){ MUSIC.style = x; MUSIC.step = 0; musicSave(); if(S) render(); }
+function sfx(kind){
+  if(!MUSIC.on || !MUSIC.ctx) return;
+  const t = MUSIC.ctx.currentTime + 0.01;
+  if(kind === 'coin'){ epNote(88, t, 0.25, 0.08); epNote(93, t + 0.08, 0.35, 0.08); }
+  if(kind === 'buy'){ [76, 79, 84].forEach((n, i) => epNote(n, t + i * 0.07, 0.4, 0.07)); }
+  if(kind === 'bad'){ epNote(52, t, 0.5, 0.08); epNote(51, t + 0.15, 0.6, 0.08); }
+}
+document.addEventListener('visibilitychange', () => {
+  if(!MUSIC.ctx) return;
+  if(document.hidden) MUSIC.ctx.suspend(); else if(MUSIC.on) MUSIC.ctx.resume();
+});
+
+/* =========================================================
    МОДАЛЬНЫЕ ОКНА
    ========================================================= */
 let modalQueue = [];
@@ -1589,6 +1881,7 @@ function openSheet(html, opts={}){
 function showReport(){
   const r = S.lastReport; if(!r) return;
   const rows = [...r.inc, ...r.exp].map(([n, v]) => `<tr><td>${esc(n)}</td><td class="${v >= 0 ? 'ok' : 'no'}">${money(v, true)}</td></tr>`).join('');
+  sfx(r.total >= 0 ? 'coin' : 'bad');
   modalQueue.unshift({title:`${MONTHS[(S.t - 1) % 12]} — итоги месяца`, emoji:'🗓️', html:`<table class="rep">${rows || '<tr><td>Доходов и расходов не было</td><td></td></tr>'}<tr class="tot"><td>Итого за месяц</td><td class="${r.total >= 0 ? 'ok' : 'no'}">${money(r.total, true)}</td></tr></table>
     ${(r.notes || []).map(n => `<p class="sub">${esc(n)}</p>`).join('')}<p class="sub" style="margin-top:10px">Наличные: <b>${money(S.money)}</b> · Капитал: <b>${money(netWorth())}</b></p>`, choices:[{label:'Дальше', cls:'pri'}]});
   showModal();
@@ -1624,6 +1917,7 @@ function renderTop(){
   const el = $('#top');
   el.innerHTML = `<div class="top-row"><div class="ava">${charSVG(S.avatar, {head:true})}</div>
     <div class="who"><b>${esc(S.name)}</b><span>${age()} лет · ${monthName()} · ${title()}</span></div>
+    <button class="mbtn" data-a="music" aria-label="Музыка">${MUSIC.on ? '🔊' : '🔇'}</button>
     <div class="cash"><b class="${S.money < 0 ? 'neg' : ''}">${money(S.money)}</b><span>капитал ${money(netWorth())}</span></div></div>
     <div class="mini-stats">
       ${statBar('❤️', S.health, '#f87171')}${statBar('😊', S.happy, '#fbbf24')}${statBar('🧠', S.smarts, '#60a5fa')}${statBar('😎', S.charisma, '#a78bfa')}${statBar('⭐', S.fame, '#f5c451')}
@@ -1640,17 +1934,22 @@ function render(){
   $('#scene').classList.toggle('hidden', TAB !== 'life');
   if(TAB === 'life') updateScene();
   const v = $('#view');
-  const f = {life:viewLife, career:viewCareer, shop:viewShop, assets:viewAssets, money:viewMoney}[TAB];
+  const f = {life:viewLife, career:viewCareer, study:viewStudy, shop:viewShop, assets:viewAssets, money:viewMoney}[TAB];
   v.innerHTML = f();
 }
 
+const STAT_ICON = {health:'❤️', happy:'😊', smarts:'🧠', charisma:'😎', fame:'⭐'};
+function effText(e){
+  return Object.entries(e).filter(([k, v]) => typeof v === 'number' && STAT_ICON[k]).map(([k, v]) => (v > 0 ? '+' : '') + String(v).replace('.', ',') + STAT_ICON[k]).join(' ');
+}
 function actBtn(a){
   const why = actionCheck(a), cost = actionCost(a);
   const parts = [`⚡${a.en}`];
   if(cost) parts.push('−' + money(cost).slice(1));
   let eff = '';
-  if(a.money === 'stream') eff = money(150 + S.fame * 25, true) + ' (зависит от ⭐)';
+  if(a.money === 'stream') eff = money(150 + S.fame * 40, true) + ' (от ⭐)';
   else if(a.money) eff = money(a.money * (a.id === 'courier' && owns('bike') ? 1.4 : 1), true);
+  if(a.money && a.eff) eff += ' ' + effText(a.eff);
   else if(a.id === 'resell') eff = 'вернёт $150–1 100';
   else if(a.eff){
     const e = a.eff, m = [];
@@ -1684,7 +1983,7 @@ function viewLife(){
     </div>
   </div>
   <div class="card row">
-    <div class="grow"><b>${job ? esc(job.t) : 'Безработный'}</b><div class="sub">${job ? money(salary()) + '/мес · эффективность ' + Math.round(S.job.perf) + '% · план ' + (S.job.yShifts || 0) + '/' + YEAR_SHIFTS + ' смен за год, осталось ' + yearLeft() + ' мес.' + (yearNeed() && yearLeft() <= 3 ? ' <span class="no">— пора пахать!</span>' : '') : 'Нет постоянного дохода'}${S.study ? ' · учёба: ' + esc(EDUM[S.study.id].name) + ` (${S.study.done}/${EDUM[S.study.id].months})` : ''}</div></div>
+    <div class="grow"><b>${job ? esc(job.t) : 'Безработный'}</b><div class="sub">${job ? money(salary()) + '/мес (' + Math.round(S.job.perf) + '% от ' + money(baseSalary()) + ') · план ' + (S.job.yShifts || 0) + '/' + YEAR_SHIFTS + ' смен за год, осталось ' + yearLeft() + ' мес.' + (yearNeed() && yearLeft() <= 3 ? ' <span class="no">— пора пахать!</span>' : '') : 'Нет постоянного дохода'}${S.study ? ' · учёба: ' + esc(EDUM[S.study.id].name) + ` (${S.study.done}/${EDUM[S.study.id].months})` : ''}</div></div>
     ${job ? `<button class="btn sm grn" data-a="hard" ${S.energy < 25 || S.job.shifts >= MAX_SHIFTS ? 'disabled' : ''}>💪 Пахать 3 дня ⚡25</button>` : `<button class="btn sm pri" data-a="tab" data-x="career">Найти работу</button>`}
   </div>
   ${groups.map(([g, n]) => { const list = ACTIONS.filter(a => a.g === g), avail = list.filter(a => !actionCheck(a)).length;
@@ -1699,7 +1998,7 @@ function viewCareer(){
     const tr = TRACK[S.job.track], lv = tr.levels[S.job.level], nl = tr.levels[S.job.level + 1];
     const why = promoReasons();
     cur = `<div class="card" style="padding:0;overflow:hidden">${photo(tr.img, tr.emoji, 'r169', {text:tr.emoji + ' ' + tr.name})}
-      <div style="padding:12px 14px"><b style="font-size:17px">${esc(lv.t)}</b><div class="sub">${money(salary())}/мес${eduBonus() > 1 ? ` (вкл. +${Math.round((eduBonus() - 1) * 100)}% за дипломы)` : ''} · стаж ${S.job.months} мес. · ступень ${S.job.level + 1} из ${tr.levels.length}</div>
+      <div style="padding:12px 14px"><b style="font-size:17px">${esc(lv.t)}</b><div class="sub">Базовая зарплата ${money(baseSalary())}${eduBonus() > 1 ? ` (вкл. +${Math.round((eduBonus() - 1) * 100)}% за дипломы)` : ''} · при эффективности ${Math.round(S.job.perf)}% вы получаете <b class="ok">${money(salary())}</b>/мес · стаж ${S.job.months} мес. · ступень ${S.job.level + 1} из ${tr.levels.length}</div>
       <div class="sub" style="margin-top:6px">📅 Годовой план: <b class="${yearNeed() ? 'no' : 'ok'}">${S.job.yShifts || 0}/${YEAR_SHIFTS}</b> смен (1 смена = 3 дня), до конца рабочего года ${yearLeft()} мес. В этом месяце: ${S.job.shifts || 0}/${MAX_SHIFTS}. За каждую недостающую смену в конце года −${MISS_PENALTY}% эффективности.</div>
       <div class="bar" style="height:7px;margin-top:5px"><div style="width:${Math.min(100, (S.job.yShifts || 0) / YEAR_SHIFTS * 100)}%;background:var(--blue)"></div></div>
       <div style="margin-top:8px" class="sub">Эффективность ${Math.round(S.job.perf)}%</div><div class="bar" style="height:8px"><div style="width:${S.job.perf}%;background:${S.job.perf >= 70 ? 'var(--green)' : 'var(--gold)'}"></div></div>
@@ -1733,17 +2032,8 @@ function viewCareer(){
   const tracks = TRACKS.filter(t => !t.combo).map(trackCard).join('');
   const combos = TRACKS.filter(t => t.combo).map(trackCard).join('');
 
-  const edu = EDU.map(e => {
-    const done = S.edu.includes(e.id), st = S.study && S.study.id === e.id;
-    const reqs = reqList(e.req);
-    return `<div class="card row" style="align-items:flex-start"><div style="font-size:28px">${e.emoji}</div><div class="grow">
-      <b>${e.name}</b><div class="sub">${e.months} мес. · ${money(e.cost)}/мес · +${e.gain.smarts ? e.gain.smarts + ' 🧠 ' : ''}${e.gain.charisma ? e.gain.charisma + ' 😎' : ''}</div>
-      ${reqs.length && !done ? `<div class="req sub">${reqs.map(r => `<span class="${r.ok ? 'ok' : 'no'}">${r.text}</span>`).join(' · ')}</div>` : ''}
-      ${st ? `<div class="bar" style="height:7px;margin-top:6px"><div style="width:${S.study.done / e.months * 100}%;background:var(--blue)"></div></div><div class="sub">${S.study.done} из ${e.months} мес.</div>` : ''}
-      </div>${done ? '<span class="pill g">✓ Окончено</span>' : st ? '<button class="btn sm red" data-a="drop">Бросить</button>' : `<button class="btn sm blu" data-a="enroll" data-x="${e.id}" ${S.study || !meets(e.req) ? 'disabled' : ''}>Поступить</button>`}</div>`;
-  }).join('');
 
-  return `<h2>💼 Работа</h2>${cur}<h2>🪜 Карьерные лестницы</h2>${tracks}<h2>🔀 Карьеры на стыке профессий</h2><p class="sub">Открываются, когда у вас есть несколько дипломов сразу. Платят намного больше обычных. Каждый диплом сверх первого также даёт +5% к любой зарплате (сейчас: +${Math.round((eduBonus() - 1) * 100)}%).</p>${combos}<h2>🎓 Образование</h2><p class="sub">Учёба занимает 20 энергии в месяц и оплачивается ежемесячно.</p>${edu}`;
+  return `<h2>💼 Работа</h2>${cur}<h2>🪜 Карьерные лестницы</h2>${tracks}<h2>🔀 Карьеры на стыке профессий</h2><p class="sub">Открываются, когда у вас есть несколько дипломов сразу. Платят намного больше обычных. Каждый диплом сверх первого также даёт +5% к любой зарплате (сейчас: +${Math.round((eduBonus() - 1) * 100)}%). Учиться — во вкладке «Учёба».</p>${combos}`;
 }
 
 function itemCard(it){
@@ -1785,7 +2075,7 @@ function assetCard(a){
   const it = ITEM[a.id];
   const pills = [];
   const tag = a.mode === 'live' ? {text:'🏠 Вы живёте здесь', cls:'own'} : a.mode === 'rent' ? {text:'📃 Сдаётся', cls:'own'} : '';
-  if(it.cat === 'biz') pills.push(`<span class="pill g">прибыль ~${money(it.profit * (a.value / it.price))}/мес</span>`);
+  if(it.cat === 'biz') pills.push(`<span class="pill g">прибыль ~${money(bizProfitEst(a))}/мес</span>`, `<span class="pill y">улучшений ${(a.ups || []).length}/4</span>`);
   if(it.rent && a.mode === 'rent') pills.push(`<span class="pill g">аренда ~${money(rentEstimate(a))}/мес</span>`);
   if(it.maint) pills.push(`<span class="pill r">содержание ${money(it.maint * (a.value / it.price))}/мес</span>`);
   if(it.cat !== 'acc' && it.cat !== 'biz') pills.push(`<span class="pill ${a.cond > 60 ? 'b' : 'r'}">состояние ${Math.round(a.cond)}%</span>`);
@@ -1799,16 +2089,39 @@ function assetCard(a){
   }
   if(it.cat !== 'acc' && it.cat !== 'biz' && a.cond < 95) btns.push(`<button class="btn sm blu" data-a="repair" data-x="${a.uid}" ${S.money < repairCost(a) ? 'disabled' : ''}>🔧 Ремонт ${money(repairCost(a))}</button>`);
   btns.push(`<button class="btn sm red" data-a="sell" data-x="${a.uid}">Продать ${money(sellPrice(a))}</button>`);
-  return `<div class="item">${photo(it.img, it.emoji, 'r169', tag)}<div class="body"><div class="name">${esc(it.name)}</div>
-    <div class="price">${money(a.value)}</div>${pills.join('')}<div class="btns">${btns.join('')}</div></div></div>`;
+  const ups = it.cat === 'biz' ? `<div class="upg">${UPG.map((u, i) => { const done = (a.ups || []).includes(i), [nm, im] = BIZ_UPG[a.id][i], c = upCost(a, i);
+    return `<button class="up ${done ? 'done' : ''}" data-a="bizup" data-x="${a.uid}:${i}" ${done || S.money < c ? 'disabled' : ''}><div class="upi">${imgTag([im, ...it.img], u.emoji, true)}</div><div class="upt"><b>${u.emoji} ${esc(nm)}</b><small>${done ? '✓ Сделано' : money(c) + ' · +' + Math.round(u.profit * 100) + '% прибыли'}</small></div></button>`; }).join('')}</div>` : '';
+  return `<div class="item">${photo(assetImg(a), it.emoji, 'r169', tag)}<div class="body"><div class="name">${esc(it.name)}</div>
+    <div class="price">${money(a.value)}</div>${pills.join('')}${ups}<div class="btns">${btns.join('')}</div></div></div>`;
+}
+function viewStudy(){
+  const edu = EDU.map(e => {
+    const done = S.edu.includes(e.id), st = S.study && S.study.id === e.id;
+    const reqs = reqList(e.req);
+    return `<div class="card row" style="align-items:flex-start"><div style="font-size:28px">${e.emoji}</div><div class="grow">
+      <b>${e.name}</b><div class="sub">${e.months} мес. · ${money(e.cost)}/мес · +${e.gain.smarts ? e.gain.smarts + ' 🧠 ' : ''}${e.gain.charisma ? e.gain.charisma + ' 😎' : ''}</div>
+      ${reqs.length && !done ? `<div class="req sub">${reqs.map(r => `<span class="${r.ok ? 'ok' : 'no'}">${r.text}</span>`).join(' · ')}</div>` : ''}
+      ${st ? `<div class="bar" style="height:7px;margin-top:6px"><div style="width:${S.study.done / e.months * 100}%;background:var(--blue)"></div></div><div class="sub">${S.study.done} из ${e.months} мес.</div>` : ''}
+      </div>${done ? '<span class="pill g">✓ Окончено</span>' : st ? '<button class="btn sm red" data-a="drop">Бросить</button>' : `<button class="btn sm blu" data-a="enroll" data-x="${e.id}" ${S.study || !meets(e.req) ? 'disabled' : ''}>Поступить</button>`}</div>`;
+  }).join('');
+  const st = S.study ? EDUM[S.study.id] : null;
+  return `<h2>🎓 Учёба</h2>
+  <div class="card statgrid"><div class="stat"><small>Дипломов (колледж, вуз, MBA)</small><b>${degrees()}</b></div><div class="stat"><small>Бонус к зарплате</small><b class="ok">+${Math.round((eduBonus() - 1) * 100)}%</b></div>
+  <div class="stat" style="grid-column:1/-1"><small>Сейчас</small><b>${st ? esc(st.name) + ` · ${S.study.done}/${st.months} мес.` : 'Не учитесь'}</b></div></div>
+  <p class="sub">Учёба забирает 20 энергии в месяц и оплачивается ежемесячно. Дипломы открывают новые ступени и карьеры на стыке профессий, а каждый диплом сверх первого даёт +5% к зарплате.</p>
+  ${S.edu.length ? `<div class="card"><b>Окончено:</b> ${S.edu.map(e => EDUM[e].emoji + ' ' + esc(EDUM[e].name)).join(' · ')}</div>` : ''}
+  ${edu}`;
 }
 function viewAssets(){
   if(!S.assets.length) return `<h2>🔑 Имущество</h2><div class="card">У вас пока ничего нет. Всё великое начинается с малого — загляните в «Покупки».<div class="btns"><button class="btn pri" data-a="tab" data-x="shop">Открыть покупки</button></div></div>`;
   const total = assetsValue();
   const groups = CATS.map(c => [c, S.assets.filter(a => ITEM[a.id].cat === c.id)]).filter(([, l]) => l.length);
+  if(ASSETCAT !== 'all' && !groups.some(([c]) => c.id === ASSETCAT)) ASSETCAT = 'all';
+  const shown = ASSETCAT === 'all' ? groups : groups.filter(([c]) => c.id === ASSETCAT);
   return `<h2>🔑 Имущество</h2>
   <div class="card statgrid"><div class="stat"><small>Стоимость имущества</small><b>${money(total)}</b></div><div class="stat"><small>Пассивный доход (прошлый мес.)</small><b class="${S.lastPassive >= 0 ? 'ok' : 'no'}">${money(S.lastPassive, true)}</b></div></div>
-  ${groups.map(([c, l]) => `<h3>${c.emoji} ${c.name} · ${l.length}</h3><div class="grid">${l.map(assetCard).join('')}</div>`).join('')}`;
+  <div class="chips"><button class="chip ${ASSETCAT === 'all' ? 'on' : ''}" data-a="acat" data-x="all">Всё · ${S.assets.length}</button>${groups.map(([c, l]) => `<button class="chip ${c.id === ASSETCAT ? 'on' : ''}" data-a="acat" data-x="${c.id}">${c.emoji} ${c.name} · ${l.length}</button>`).join('')}</div>
+  ${shown.map(([c, l]) => `<h3>${c.emoji} ${c.name} · ${l.length} · ${money(l.reduce((s, a) => s + a.value, 0))}</h3><div class="grid">${l.map(assetCard).join('')}</div>`).join('')}`;
 }
 
 function spark(){
@@ -1834,7 +2147,7 @@ function viewMoney(){
   return `<h2>📈 Финансы</h2>
   <div class="card"><div class="row"><div class="grow"><div class="sub">Капитал</div><b style="font-size:24px">${money(nw)}</b></div><div style="text-align:right"><div class="sub">${title()}</div></div></div>${spark()}
   <div class="statgrid"><div class="stat"><small>Наличные</small><b>${money(S.money)}</b></div><div class="stat"><small>Имущество</small><b>${money(assetsValue())}</b></div>
-  <div class="stat"><small>Инвестиции</small><b>${money(invValue())}</b></div><div class="stat"><small>Долг</small><b class="${S.debt > 0 ? 'no' : ''}">${money(-S.debt)}</b></div>
+  <div class="stat"><small>Инвестиции и вклады</small><b>${money(invValue() + depValue())}</b></div><div class="stat"><small>Долг</small><b class="${S.debt > 0 ? 'no' : ''}">${money(-S.debt)}</b></div>
   <div class="stat"><small>Доход за месяц</small><b class="ok">${money(S.lastIncome)}</b></div><div class="stat"><small>Итог месяца</small><b class="${r && r.total < 0 ? 'no' : 'ok'}">${r ? money(r.total, true) : '—'}</b></div></div></div>
 
   <h3>🏅 Путь к успеху · ${done}/${GOALS.length}</h3>
@@ -1843,6 +2156,15 @@ function viewMoney(){
   <h3>💹 Инвестиции</h3>
   ${invCard('stocks', 'Индексный фонд акций', '📊', [4960438], 'Растёт в среднем на ~7% в год, но бывают просадки.')}
   ${invCard('crypto', 'Криптовалюта', '🪙', [16902140], 'Огромная волатильность: можно ×10, а можно −90%.')}
+
+  <h3>💰 Вклады</h3>
+  <div class="card"><p class="sub" style="margin-top:0">Проценты начисляются каждый месяц на всю сумму вместе с прошлыми процентами (сложный процент). Забрать деньги досрочно нельзя — только в конце срока.</p>
+  <div class="seg">${DEP_TERMS.map(t => `<button class="${t.m === DEPTERM ? 'on' : ''}" data-a="depterm" data-x="${t.m}">${t.m < 12 ? t.m + ' мес' : t.m / 12 + (t.m === 12 ? ' год' : t.m < 60 ? ' года' : ' лет')}<br>${(t.r * 100).toFixed(1).replace('.', ',')}%</button>`).join('')}</div>
+  <div class="sub">Например, $10 000 превратятся в <b class="ok">${money(depFinal(10000, DEP_TERMS.find(x => x.m === DEPTERM)))}</b></div>
+  <div class="btns">${[100, 1000, 10000, 100000, 1000000].map(a => `<button class="btn sm grn" data-a="dep" data-x="${a}" ${S.money < a ? 'disabled' : ''}>+${money(a)}</button>`).join('')}<button class="btn sm grn" data-a="dep" data-x="all" ${S.money < 100 ? 'disabled' : ''}>Всё</button></div>
+  ${S.deposits.length ? S.deposits.map(d => `<div class="row" style="margin-top:10px"><div class="grow"><b>${money(d.amt)}</b> <span class="sub">из ${money(d.start)} · ${(d.rate * 100).toFixed(1).replace('.', ',')}%</span>
+    <div class="bar" style="height:6px"><div style="width:${(1 - d.left / d.months) * 100}%;background:var(--green)"></div></div><div class="sub">осталось ${d.left} мес. · к концу ≈ ${money(d.amt * Math.pow(1 + d.rate / 12, d.left))}</div></div><span class="pill">🔒</span></div>`).join('') : '<p class="sub">Открытых вкладов нет.</p>'}
+  </div>
 
   <h3>🏦 Банк</h3>
   <div class="card"><div class="statgrid"><div class="stat"><small>Ваш долг</small><b class="${S.debt ? 'no' : ''}">${money(S.debt)}</b></div><div class="stat"><small>Доступно в кредит</small><b>${money(creditAvail())}</b></div></div>
@@ -1853,8 +2175,11 @@ function viewMoney(){
   <h3>⚙️ Игра</h3>
   <div class="card"><p class="sub" style="margin-top:0">Прогресс сохраняется автоматически на этом устройстве.</p>
   <p class="sub">Как поставить на iPhone: откройте файл в Safari → «Поделиться» → «На экран „Домой“».</p>
+  <div class="row"><div class="grow"><b>🎷 Музыка</b><div class="sub">Генеративная: каждый раз звучит по-новому${MUSIC.on ? '' : ' · выключена'}</div></div><button class="btn sm ${MUSIC.on ? 'grn' : ''}" data-a="music">${MUSIC.on ? '🔊 Вкл' : '🔇 Выкл'}</button></div>
+  <div class="seg">${Object.entries(STYLES).map(([k, v]) => `<button class="${k === MUSIC.style ? 'on' : ''}" data-a="mstyle" data-x="${k}">${v.name}</button>`).join('')}</div>
+  <p class="sub">На iPhone звук не играет, если включён беззвучный режим (переключатель сбоку).</p>
   <div class="btns"><button class="btn red sm" data-a="restart">Начать жизнь заново</button></div>
-  <div class="credit">Фотографии: Pexels (бесплатная лицензия), Unsplash и Google Open Images / Flickr (CC BY 2.0, creativecommons.org/licenses/by/2.0). Авторы фото Open Images: _TC Photography_, Alica, Amila Tennakoon, Autoviva, Charlie, chem7, Chris Hoare, Chris Sobczak, Chris Yarzab, Cowgirlonline, Damian Morys, dave_7, Dexte-r, Emily May, FotoSleuth, Greg Gjerdingen, ilikewaffles11, Jaime de la Fuente, jay-jerry, Jeremy, Jim Linwood, Ken Hodge, Kārlis Dambrāns, lookcatalog, M 93: „Dein Nordrhein-Westfalen“, Manuel Rebic, nakhon100, Phillip Pessar, Random Retail, Rex Gray, Riley, section215, The Car Spy, The NRMA, Werner  Bayer, Yacht Rent, Yosika ( happyholiday.travel ). Персонаж нарисован специально для UpHill.</div></div>`;
+  <div class="credit">Фотографии: Pexels (бесплатная лицензия), Unsplash и Google Open Images / Flickr (CC BY 2.0, creativecommons.org/licenses/by/2.0). Авторы фото Open Images: _TC Photography_, Alica, Amila Tennakoon, Artem Svetlov, Autoviva, Az1568, Ben Hanbury, bloomsburys, Brian Eager, Calgary Reviews, Charlie, chem7, Chris Hoare, Chris Owen, Chris Sobczak, Chris Yarzab, christopher cornelius, Christopher Michel, Clyde Robinson, Cowgirlonline, D.C.Atty, Damian Morys, Dave Sizer, dave_7, David Bruce Jr., David Jackmanson, Department of Foreign Affairs and Trade, Dexte-r, Eden, Janine and Jim, Emily May, flattop341, flowcomm, fotologic, FotoSleuth, Gary Stevens, Greg Gjerdingen, ilikewaffles11, Ines Hegedus-Garcia, Jaime de la Fuente, Jason White, Javier Lastras, jay-jerry, JBLM  MWR, Jeremy, Jhong Dizon, Jim Linwood, Joao Carlos Medau, José Luis Zapata Ruiz, Karl Baron, Kecko, Ken Hodge, kiera_paige, KOMUnews, Kārlis Dambrāns, Laurie Avocado, lookcatalog, M 93: „Dein Nordrhein-Westfalen“, Manolo Gómez, Manuel Rebic, Map of the Urban Linguistic Landscape, Marianne O&#x27;Leary, Mark Fahey, Martin Dougiamas, Matt Brown, Mercedes-Benz of Encino, mhiguera, Mike Mozart, nakhon100, Orange County Archives, Paul Sableman, Phillip Pessar, Random Retail, Rex Gray, Riley, Roland Tanglao, Ron Cogswell, Ruocaled, Rusty Clark - On the Air M-F 8am-noon, Ryan Somma, section215, Shinya Suzuki, Steven Carlton, Ted Van Pelt, The Car Spy, The Conmunity -  Pop Culture Geek, The NRMA, Tim Green, U.S. Army RDECOM, V Smoothe, Vincent Boyer, Wendy Berry, Werner  Bayer, Yacht Rent, Yosika ( happyholiday.travel ), Yuya Tamai, Zeetz Jones, 準建築人手札網站 Forgemind ArchiMedia. Персонаж нарисован специально для UpHill.</div></div>`;
 }
 
 function housingSheet(){
@@ -2120,6 +2445,10 @@ const H = {
   enroll:x => enroll(x),
   drop:() => dropOut(),
   cat:x => { SHOPCAT = x; render(); },
+  acat:x => { ASSETCAT = x; render(); },
+  music:() => musicToggle(),
+  mstyle:x => musicStyle(x),
+  bizup:x => { const [u, i] = x.split(':'); bizUpgrade(+u, +i); },
   buy:x => buy(x),
   mortgage:x => buy(x, true),
   sell:x => sell(+x),
@@ -2132,6 +2461,8 @@ const H = {
   ib:x => { const [k, a] = x.split(':'); invBuy(k, a === 'all' ? 'all' : +a); },
   is:x => { const [k, f] = x.split(':'); invSell(k, +f); },
   lt:x => loanTake(+x),
+  depterm:x => { DEPTERM = +x; render(); },
+  dep:x => depOpen(x === 'all' ? 'all' : +x),
   lr:x => loanRepay(x === 'all' ? 'all' : +x),
   choice:x => choose(+x),
   restart:() => { modalQueue.unshift({title:'Начать заново?', emoji:'⚠️', html:'<p>Весь прогресс будет потерян.</p>', choices:[{label:'Да, заново', cls:'red', fn:()=>{ wipe(); S = null; modalQueue = []; showStart(); }}, {label:'Отмена'}]}); showModal(); },
@@ -2142,6 +2473,7 @@ const H = {
   continue:() => { const d = load(); if(d){ S = d; enterGame(); } },
 };
 document.addEventListener('click', e => {
+  if(MUSIC.on && !MUSIC.timer && e.target.closest('[data-a]') && !e.target.closest('[data-a=music]')) musicStart(); // звук на iOS можно включить только после касания
   const b = e.target.closest('[data-a]');
   if(!b || b.disabled) return;
   const fn = H[b.dataset.a];
