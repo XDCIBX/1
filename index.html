@@ -169,6 +169,8 @@ h3{font-size:16px;margin:16px 0 8px}
 .goal.done .ic{background:rgba(52,211,153,.18)}
 .goal.done b{color:var(--green)}
 .spark{width:100%;height:90px;display:block}
+.amtrow{display:flex;gap:8px;align-items:center;margin-top:10px}
+.amtrow .field{margin:0;flex:1;min-width:0;padding:9px 12px;font-size:16px}
 .upg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .up{display:flex;flex-direction:column;text-align:left;background:var(--card2);border:1px solid var(--line);border-radius:12px;overflow:hidden;padding:0}
 .up[disabled]{opacity:1;pointer-events:none}
@@ -1255,6 +1257,22 @@ function setHome(id){
 function setLifestyle(id){ S.lifestyle = id; afterChange(); }
 
 /* инвестиции и кредит */
+/* разбор суммы из поля ввода: «2500», «10 000», «15к», «1,5 млн», «2m» */
+function parseAmount(str){
+  let t = String(str || '').toLowerCase().replace(/[\s\u00a0$]/g, '').replace(',', '.');
+  if(!t) return NaN;
+  let k = 1;
+  const suf = [[/(млрд|b)$/, 1e9], [/(млн|м|m)$/, 1e6], [/(тыс\.?|к|k)$/, 1e3]];
+  for(const [re, mul] of suf) if(re.test(t)){ k = mul; t = t.replace(re, ''); break; }
+  if(!/^\d*\.?\d+$/.test(t)) return NaN;
+  return Math.round(parseFloat(t) * k);
+}
+function readAmount(id){
+  const el = document.getElementById(id);
+  const v = parseAmount(el && el.value);
+  if(!(v > 0)){ toast('Введите сумму, например 2500 или 15к'); if(el) el.focus(); return 0; }
+  return v;
+}
 function invBuy(kind, amt){
   if(amt === 'all') amt = Math.floor(S.money);
   if(amt <= 0 || S.money < amt){ toast('Не хватает денег'); return; }
@@ -2160,7 +2178,9 @@ function invCard(kind, name, emoji, img, desc){
   <div class="body"><div class="row"><div class="grow"><div class="name">${name}</div><div class="desc">${desc}</div></div><div style="text-align:right"><b>${h.p.toFixed(2)}</b><div class="sub">цена пая</div></div></div>
   <div class="statgrid" style="margin-top:6px"><div class="stat"><small>У вас</small><b>${money(val)}</b></div><div class="stat"><small>Прибыль</small><b class="${pl >= 0 ? 'ok' : 'no'}">${money(pl, true)}</b></div></div>
   <div class="btns">${amts.map(a => `<button class="btn sm grn" data-a="ib" data-x="${kind}:${a}" ${S.money < a ? 'disabled' : ''}>+${money(a)}</button>`).join('')}<button class="btn sm grn" data-a="ib" data-x="${kind}:all" ${S.money < 1 ? 'disabled' : ''}>Всё</button></div>
-  <div class="btns">${[0.25, 0.5, 1].map(f => `<button class="btn sm red" data-a="is" data-x="${kind}:${f}" ${h.u <= 0 ? 'disabled' : ''}>Продать ${f * 100}%</button>`).join('')}</div></div></div>`;
+  <div class="btns">${[0.25, 0.5, 1].map(f => `<button class="btn sm red" data-a="is" data-x="${kind}:${f}" ${h.u <= 0 ? 'disabled' : ''}>Продать ${f * 100}%</button>`).join('')}</div>
+  <div class="amtrow"><input class="field amt" id="amt-${kind}" inputmode="decimal" autocomplete="off" placeholder="Своя сумма, $" data-enter="ibx" data-x="${kind}">
+    <button class="btn sm grn" data-a="ibx" data-x="${kind}">Купить</button><button class="btn sm red" data-a="isx" data-x="${kind}" ${h.u <= 0 ? 'disabled' : ''}>Продать</button></div></div></div>`;
 }
 function viewMoney(){
   const nw = netWorth();
@@ -2184,6 +2204,9 @@ function viewMoney(){
   <div class="seg">${DEP_TERMS.map(t => `<button class="${t.m === DEPTERM ? 'on' : ''}" data-a="depterm" data-x="${t.m}">${t.m < 12 ? t.m + ' мес' : t.m / 12 + (t.m === 12 ? ' год' : t.m < 60 ? ' года' : ' лет')}<br>${(t.r * 100).toFixed(1).replace('.', ',')}%</button>`).join('')}</div>
   <div class="sub">Например, $10 000 превратятся в <b class="ok">${money(depFinal(10000, DEP_TERMS.find(x => x.m === DEPTERM)))}</b></div>
   <div class="btns">${[100, 1000, 10000, 100000, 1000000].map(a => `<button class="btn sm grn" data-a="dep" data-x="${a}" ${S.money < a ? 'disabled' : ''}>+${money(a)}</button>`).join('')}<button class="btn sm grn" data-a="dep" data-x="all" ${S.money < 100 ? 'disabled' : ''}>Всё</button></div>
+  <div class="amtrow"><input class="field amt" id="amt-dep" inputmode="decimal" autocomplete="off" placeholder="Своя сумма, $" data-enter="depx" data-preview="dep">
+    <button class="btn sm grn" data-a="depx">Открыть вклад</button></div>
+  <div class="sub" id="dep-preview"></div>
   ${S.deposits.length ? S.deposits.map(d => `<div class="row" style="margin-top:10px"><div class="grow"><b>${money(d.amt)}</b> <span class="sub">из ${money(d.start)} · ${(d.rate * 100).toFixed(1).replace('.', ',')}%</span>
     <div class="bar" style="height:6px"><div style="width:${(1 - d.left / d.months) * 100}%;background:var(--green)"></div></div><div class="sub">осталось ${d.left} мес. · к концу ≈ ${money(d.amt * Math.pow(1 + d.rate / 12, d.left))}</div></div><span class="pill">🔒</span></div>`).join('') : '<p class="sub">Открытых вкладов нет.</p>'}
   </div>
@@ -2486,6 +2509,12 @@ const H = {
   lt:x => loanTake(+x),
   depterm:x => { DEPTERM = +x; render(); },
   dep:x => depOpen(x === 'all' ? 'all' : +x),
+  depx:() => { const v = readAmount('amt-dep'); if(v) depOpen(v); },
+  ibx:x => { const v = readAmount('amt-' + x); if(!v) return; if(v > S.money){ toast(`Не хватает денег: у вас ${money(S.money)}`); return; } invBuy(x, v); },
+  isx:x => { const v = readAmount('amt-' + x); if(!v) return; const h = S.inv[x], val = h.u * h.p;
+    if(val <= 0){ toast('Продавать нечего'); return; }
+    if(v > val + 0.5) toast(`У вас только ${money(val)} — продаём всё`);
+    invSell(x, Math.min(1, v / val)); },
   lr:x => loanRepay(x === 'all' ? 'all' : +x),
   choice:x => choose(+x),
   restart:() => { modalQueue.unshift({title:'Начать заново?', emoji:'⚠️', html:'<p>Весь прогресс будет потерян.</p>', choices:[{label:'Да, заново', cls:'red', fn:()=>{ wipe(); S = null; modalQueue = []; showStart(); }}, {label:'Отмена'}]}); showModal(); },
@@ -2501,6 +2530,19 @@ document.addEventListener('click', e => {
   if(!b || b.disabled) return;
   const fn = H[b.dataset.a];
   if(fn) fn(b.dataset.x);
+});
+// Enter в поле суммы = нажать кнопку; предпросмотр дохода по вкладу
+document.addEventListener('keydown', e => {
+  const el = e.target;
+  if(e.key !== 'Enter' || !el.dataset || !el.dataset.enter) return;
+  e.preventDefault(); el.blur();
+  const fn = H[el.dataset.enter]; if(fn) fn(el.dataset.x);
+});
+document.addEventListener('input', e => {
+  if(e.target.dataset.preview !== 'dep') return;
+  const v = parseAmount(e.target.value), out = document.getElementById('dep-preview');
+  const t = DEP_TERMS.find(x => x.m === DEPTERM);
+  out.innerHTML = v > 0 ? `${money(v)} через ${t.m} мес. превратятся в <b class="ok">${money(depFinal(v, t))}</b>${v > S.money ? ' <span class="no">· не хватает денег</span>' : ''}` : '';
 });
 // тап по фону модалки закрывает только информационные окна (без выбора)
 $('#modal').addEventListener('click', e => {
