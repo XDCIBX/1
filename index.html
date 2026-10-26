@@ -1221,6 +1221,27 @@ function repair(uid){
   afterChange();
 }
 const repairCost = a => Math.round(a.value * (100 - a.cond) / 100 * 0.12);
+/* ремонт всего сразу: сначала то, что в худшем состоянии */
+const needRepair = () => S.assets.filter(a => !['acc', 'biz'].includes(ITEM[a.id].cat) && a.cond < 100 && repairCost(a) > 0).sort((a, b) => a.cond - b.cond);
+function repairAll(){
+  const list = needRepair();
+  if(!list.length){ toast('Всё и так в идеальном состоянии'); return; }
+  const total = list.reduce((s, a) => s + repairCost(a), 0);
+  let budget = Math.max(0, S.money), can = [];
+  for(const a of list){ const c = repairCost(a); if(c <= budget){ can.push(a); budget -= c; } }
+  if(!can.length){ toast('Не хватает денег даже на один ремонт'); return; }
+  const canSum = can.reduce((s, a) => s + repairCost(a), 0);
+  const full = can.length === list.length;
+  modalQueue.unshift({title:'Отремонтировать всё?', emoji:'🔧', html:`<p>${full ? `Будет отремонтировано <b>${list.length}</b> ${list.length === 1 ? 'объект' : list.length < 5 ? 'объекта' : 'объектов'} за <b class="no">${money(total)}</b>` : `На всё нужно ${money(total)}, а у вас ${money(S.money)}. Можно сразу починить <b>${can.length} из ${list.length}</b> (самые изношенные) за <b class="no">${money(canSum)}</b>`}</p>
+    <p class="sub">${can.map(a => `${ITEM[a.id].emoji} ${esc(ITEM[a.id].name)} — ${Math.round(a.cond)}% → 100%, ${money(repairCost(a))}`).join('<br>')}</p>`,
+    choices:[{label:`🔧 Отремонтировать за ${money(canSum)}`, cls:'pri', fn:()=>{
+      can.forEach(a => { const c = repairCost(a); S.money -= c; a.cond = 100; });
+      logMsg(`🔧 Ремонт ${can.length} объектов за ${money(canSum)}`);
+      toast(`Отремонтировано: ${can.length}`);
+      afterChange();
+    }}, {label:'Отмена'}]});
+  showModal();
+}
 function rentEstimate(a){ const it = ITEM[a.id]; return Math.round((it.rent || 0) * (a.value / it.price) * (0.55 + 0.45 * a.cond / 100)); }
 
 function setHome(id){
@@ -2120,6 +2141,7 @@ function viewAssets(){
   const shown = ASSETCAT === 'all' ? groups : groups.filter(([c]) => c.id === ASSETCAT);
   return `<h2>🔑 Имущество</h2>
   <div class="card statgrid"><div class="stat"><small>Стоимость имущества</small><b>${money(total)}</b></div><div class="stat"><small>Пассивный доход (прошлый мес.)</small><b class="${S.lastPassive >= 0 ? 'ok' : 'no'}">${money(S.lastPassive, true)}</b></div></div>
+  ${(() => { const nr = needRepair(); return nr.length ? `<button class="btn blu full" style="margin-bottom:12px" data-a="repairall">🔧 Отремонтировать всё · ${nr.length} шт. · ${money(nr.reduce((s, a) => s + repairCost(a), 0))}</button>` : ''; })()}
   <div class="chips"><button class="chip ${ASSETCAT === 'all' ? 'on' : ''}" data-a="acat" data-x="all">Всё · ${S.assets.length}</button>${groups.map(([c, l]) => `<button class="chip ${c.id === ASSETCAT ? 'on' : ''}" data-a="acat" data-x="${c.id}">${c.emoji} ${c.name} · ${l.length}</button>`).join('')}</div>
   ${shown.map(([c, l]) => `<h3>${c.emoji} ${c.name} · ${l.length} · ${money(l.reduce((s, a) => s + a.value, 0))}</h3><div class="grid">${l.map(assetCard).join('')}</div>`).join('')}`;
 }
@@ -2454,6 +2476,7 @@ const H = {
   sell:x => sell(+x),
   mode:x => { const [u, m] = x.split(':'); setMode(+u, m); },
   repair:x => repair(+x),
+  repairall:() => repairAll(),
   housing:() => housingSheet(),
   home:x => setHome(x),
   ownhome:x => { closeModal(true); setMode(+x, 'live'); },
