@@ -169,7 +169,11 @@ h3{font-size:16px;margin:16px 0 8px}
 .goal.done .ic{background:rgba(52,211,153,.18)}
 .goal.done b{color:var(--green)}
 .spark{width:100%;height:90px;display:block}
-.amtrow{display:flex;gap:8px;align-items:center;margin-top:10px}
+.amtrow{display:flex;gap:8px;align-items:center;margin-top:6px}
+.updbar{position:fixed;left:12px;right:12px;top:calc(var(--safe-t) + 10px);z-index:95;background:#1f2a44;border:1px solid var(--gold);border-radius:14px;padding:10px 12px;font-size:13.5px;display:flex;gap:10px;align-items:center;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.updbar .btn{flex:none}
+.amtlbl{display:block;margin-top:12px;font-size:13px;font-weight:700;color:var(--gold)}
+.amtrow .field{-webkit-user-select:text;user-select:text;-webkit-touch-callout:default}
 .amtrow .field{margin:0;flex:1;min-width:0;padding:9px 12px;font-size:16px}
 .upg{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .up{display:flex;flex-direction:column;text-align:left;background:var(--card2);border:1px solid var(--line);border-radius:12px;overflow:hidden;padding:0}
@@ -273,6 +277,7 @@ h3{font-size:16px;margin:16px 0 8px}
 
 <script>
 'use strict';
+const APP_VERSION = '1.9';
 /* =========================================================
    ФОТО. Первый элемент — основное фото, остальные — запасные.
    число  — фото Pexels (бесплатная лицензия);
@@ -2177,10 +2182,12 @@ function invCard(kind, name, emoji, img, desc){
   return `<div class="item" style="margin-bottom:12px">${photo(img, emoji, 'r169', {text:`${emoji} ${name}`})}
   <div class="body"><div class="row"><div class="grow"><div class="name">${name}</div><div class="desc">${desc}</div></div><div style="text-align:right"><b>${h.p.toFixed(2)}</b><div class="sub">цена пая</div></div></div>
   <div class="statgrid" style="margin-top:6px"><div class="stat"><small>У вас</small><b>${money(val)}</b></div><div class="stat"><small>Прибыль</small><b class="${pl >= 0 ? 'ok' : 'no'}">${money(pl, true)}</b></div></div>
-  <div class="btns">${amts.map(a => `<button class="btn sm grn" data-a="ib" data-x="${kind}:${a}" ${S.money < a ? 'disabled' : ''}>+${money(a)}</button>`).join('')}<button class="btn sm grn" data-a="ib" data-x="${kind}:all" ${S.money < 1 ? 'disabled' : ''}>Всё</button></div>
-  <div class="btns">${[0.25, 0.5, 1].map(f => `<button class="btn sm red" data-a="is" data-x="${kind}:${f}" ${h.u <= 0 ? 'disabled' : ''}>Продать ${f * 100}%</button>`).join('')}</div>
-  <div class="amtrow"><input class="field amt" id="amt-${kind}" inputmode="decimal" autocomplete="off" placeholder="Своя сумма, $" data-enter="ibx" data-x="${kind}">
-    <button class="btn sm grn" data-a="ibx" data-x="${kind}">Купить</button><button class="btn sm red" data-a="isx" data-x="${kind}" ${h.u <= 0 ? 'disabled' : ''}>Продать</button></div></div></div>`;
+  <label class="amtlbl" for="amt-${kind}">✍️ Введите сумму вручную</label>
+  <div class="amtrow"><input class="field amt" id="amt-${kind}" type="text" inputmode="decimal" autocomplete="off" placeholder="Например, 2500" data-enter="ibx" data-x="${kind}">
+    <button class="btn sm grn" data-a="ibx" data-x="${kind}">Купить</button><button class="btn sm red" data-a="isx" data-x="${kind}" ${h.u <= 0 ? 'disabled' : ''}>Продать</button></div>
+  <div class="sub" style="margin-top:8px">Или быстро:</div>
+  <div class="btns" style="margin-top:6px">${amts.map(a => `<button class="btn sm grn" data-a="ib" data-x="${kind}:${a}" ${S.money < a ? 'disabled' : ''}>+${money(a)}</button>`).join('')}<button class="btn sm grn" data-a="ib" data-x="${kind}:all" ${S.money < 1 ? 'disabled' : ''}>Всё</button></div>
+  <div class="btns">${[0.25, 0.5, 1].map(f => `<button class="btn sm red" data-a="is" data-x="${kind}:${f}" ${h.u <= 0 ? 'disabled' : ''}>Продать ${f * 100}%</button>`).join('')}</div></div></div>`;
 }
 function viewMoney(){
   const nw = netWorth();
@@ -2203,10 +2210,12 @@ function viewMoney(){
   <div class="card"><p class="sub" style="margin-top:0">Проценты начисляются каждый месяц на всю сумму вместе с прошлыми процентами (сложный процент). Забрать деньги досрочно нельзя — только в конце срока.</p>
   <div class="seg">${DEP_TERMS.map(t => `<button class="${t.m === DEPTERM ? 'on' : ''}" data-a="depterm" data-x="${t.m}">${t.m < 12 ? t.m + ' мес' : t.m / 12 + (t.m === 12 ? ' год' : t.m < 60 ? ' года' : ' лет')}<br>${(t.r * 100).toFixed(1).replace('.', ',')}%</button>`).join('')}</div>
   <div class="sub">Например, $10 000 превратятся в <b class="ok">${money(depFinal(10000, DEP_TERMS.find(x => x.m === DEPTERM)))}</b></div>
-  <div class="btns">${[100, 1000, 10000, 100000, 1000000].map(a => `<button class="btn sm grn" data-a="dep" data-x="${a}" ${S.money < a ? 'disabled' : ''}>+${money(a)}</button>`).join('')}<button class="btn sm grn" data-a="dep" data-x="all" ${S.money < 100 ? 'disabled' : ''}>Всё</button></div>
-  <div class="amtrow"><input class="field amt" id="amt-dep" inputmode="decimal" autocomplete="off" placeholder="Своя сумма, $" data-enter="depx" data-preview="dep">
+  <label class="amtlbl" for="amt-dep">✍️ Сумма вклада вручную</label>
+  <div class="amtrow"><input class="field amt" id="amt-dep" type="text" inputmode="decimal" autocomplete="off" placeholder="Например, 7500" data-enter="depx" data-preview="dep">
     <button class="btn sm grn" data-a="depx">Открыть вклад</button></div>
   <div class="sub" id="dep-preview"></div>
+  <div class="sub" style="margin-top:8px">Или быстро:</div>
+  <div class="btns" style="margin-top:6px">${[100, 1000, 10000, 100000, 1000000].map(a => `<button class="btn sm grn" data-a="dep" data-x="${a}" ${S.money < a ? 'disabled' : ''}>+${money(a)}</button>`).join('')}<button class="btn sm grn" data-a="dep" data-x="all" ${S.money < 100 ? 'disabled' : ''}>Всё</button></div>
   ${S.deposits.length ? S.deposits.map(d => `<div class="row" style="margin-top:10px"><div class="grow"><b>${money(d.amt)}</b> <span class="sub">из ${money(d.start)} · ${(d.rate * 100).toFixed(1).replace('.', ',')}%</span>
     <div class="bar" style="height:6px"><div style="width:${(1 - d.left / d.months) * 100}%;background:var(--green)"></div></div><div class="sub">осталось ${d.left} мес. · к концу ≈ ${money(d.amt * Math.pow(1 + d.rate / 12, d.left))}</div></div><span class="pill">🔒</span></div>`).join('') : '<p class="sub">Открытых вкладов нет.</p>'}
   </div>
@@ -2214,12 +2223,16 @@ function viewMoney(){
   <h3>🏦 Банк</h3>
   <div class="card"><div class="statgrid"><div class="stat"><small>Ваш долг</small><b class="${S.debt ? 'no' : ''}">${money(S.debt)}</b></div><div class="stat"><small>Доступно в кредит</small><b>${money(creditAvail())}</b></div></div>
   <p class="sub">Ставка 0,9% в месяц. Каждый месяц автоматически списывается 2% долга. Лимит зависит от дохода и имущества.</p>
+  <label class="amtlbl" for="amt-loan">✍️ Сумма вручную</label>
+  <div class="amtrow"><input class="field amt" id="amt-loan" type="text" inputmode="decimal" autocomplete="off" placeholder="Например, 15000" data-enter="ltx">
+    <button class="btn sm blu" data-a="ltx">Взять</button><button class="btn sm grn" data-a="lrx" ${S.debt <= 0 ? 'disabled' : ''}>Погасить</button></div>
   <div class="btns">${[1000, 10000, 100000, 1000000].map(a => `<button class="btn sm blu" data-a="lt" data-x="${a}" ${creditAvail() < a ? 'disabled' : ''}>Взять ${money(a)}</button>`).join('')}</div>
   <div class="btns"><button class="btn sm grn" data-a="lr" data-x="1000" ${S.debt <= 0 || S.money < 1 ? 'disabled' : ''}>Погасить $1 000</button><button class="btn sm grn" data-a="lr" data-x="all" ${S.debt <= 0 || S.money < 1 ? 'disabled' : ''}>Погасить всё возможное</button></div></div>
 
   <h3>⚙️ Игра</h3>
   <div class="card"><p class="sub" style="margin-top:0">Прогресс сохраняется автоматически на этом устройстве.</p>
-  <p class="sub">Как поставить на iPhone: откройте файл в Safari → «Поделиться» → «На экран „Домой“».</p>
+  <p class="sub">Как поставить на iPhone: откройте https://xdcibx.github.io/1/ в Safari → «Поделиться» → «На экран „Домой“».</p>
+  <p class="sub">Версия игры: <b>${APP_VERSION}</b> <button class="btn sm" data-a="checkupd">Проверить обновления</button></p>
   <div class="row"><div class="grow"><b>🎷 Музыка</b><div class="sub">Генеративная: каждый раз звучит по-новому${MUSIC.on ? '' : ' · выключена'}</div></div><button class="btn sm ${MUSIC.on ? 'grn' : ''}" data-a="music">${MUSIC.on ? '🔊 Вкл' : '🔇 Выкл'}</button></div>
   <div class="seg">${Object.entries(STYLES).map(([k, v]) => `<button class="${k === MUSIC.style ? 'on' : ''}" data-a="mstyle" data-x="${k}">${v.name}</button>`).join('')}</div>
   <p class="sub">На iPhone звук не играет, если включён беззвучный режим (переключатель сбоку).</p>
@@ -2437,7 +2450,7 @@ function showStart(){
     <button class="opt ${startMode === 'hard' ? 'on' : ''}" data-a="sm" data-x="hard"><b>🥶 С самого дна</b><span>$0, улица, никаких связей. Самый крутой подъём в гору.</span></button>
     <button class="opt ${startMode === 'easy' ? 'on' : ''}" data-a="sm" data-x="easy"><b>🎒 Скромный старт</b><span>$1 500 и койка в хостеле. Немного проще.</span></button>
     <button class="btn pri full" style="margin-top:10px;min-height:52px;font-size:17px" data-a="begin">Начать жизнь</button>
-    <div class="credit">Все предметы, жильё и карьеры — с реальными фото (Pexels).<br>Сохранение — автоматически в браузере.</div>
+    <div class="credit">Все предметы, жильё и карьеры — с реальными фото.<br>Сохранение — автоматически в браузере. Версия ${APP_VERSION}</div>
   </div>`;
 }
 function beginGame(){
@@ -2461,6 +2474,31 @@ function enterGame(){
   render();
   window.scrollTo(0, 0);
 }
+
+/* =========================================================
+   ПРОВЕРКА ОБНОВЛЕНИЙ: Safari и иконка «Домой» могут показывать
+   старую копию из кэша — сверяем версию с сайтом.
+   ========================================================= */
+let updShown = false;
+function checkUpdate(manual){
+  if(!/^https?:/.test(location.protocol)){ if(manual) toast('Проверка работает только на сайте, а не в файле'); return; }
+  fetch(location.pathname + '?check=' + Date.now(), {cache:'no-store'})
+    .then(r => r.ok ? r.text() : '')
+    .then(t => {
+      const m = t.match(/APP_VERSION = '([\d.]+)'/);
+      if(m && m[1] !== APP_VERSION){
+        if(updShown) return; updShown = true;
+        const bar = document.createElement('div');
+        bar.className = 'updbar';
+        bar.innerHTML = `Вышла новая версия ${m[1]} (у вас ${APP_VERSION}). Прогресс сохранится. <button class="btn sm pri" id="updgo">Обновить</button>`;
+        document.body.appendChild(bar);
+        document.getElementById('updgo').onclick = () => location.replace(location.pathname + '?v=' + m[1]);
+      } else if(manual) toast(`У вас последняя версия ${APP_VERSION}`);
+    })
+    .catch(() => { if(manual) toast('Нет связи с сайтом'); });
+}
+setTimeout(() => checkUpdate(false), 1500);
+document.addEventListener('visibilitychange', () => { if(!document.hidden) checkUpdate(false); });
 
 /* =========================================================
    ОБРАБОТКА НАЖАТИЙ
@@ -2509,6 +2547,9 @@ const H = {
   lt:x => loanTake(+x),
   depterm:x => { DEPTERM = +x; render(); },
   dep:x => depOpen(x === 'all' ? 'all' : +x),
+  checkupd:() => checkUpdate(true),
+  ltx:() => { const v = readAmount('amt-loan'); if(!v) return; if(v > creditAvail()){ toast(`Банк одобрит максимум ${money(creditAvail())}`); return; } loanTake(v); },
+  lrx:() => { const v = readAmount('amt-loan'); if(v) loanRepay(v); },
   depx:() => { const v = readAmount('amt-dep'); if(v) depOpen(v); },
   ibx:x => { const v = readAmount('amt-' + x); if(!v) return; if(v > S.money){ toast(`Не хватает денег: у вас ${money(S.money)}`); return; } invBuy(x, v); },
   isx:x => { const v = readAmount('amt-' + x); if(!v) return; const h = S.inv[x], val = h.u * h.p;
